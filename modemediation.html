@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 8 調節與中介 | Quick R for Statistics</title>
+  <meta name="description" content="Chapter 8 調節與中介 | Quick R for Statistics" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 8 調節與中介 | Quick R for Statistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 8 調節與中介 | Quick R for Statistics" />
+  
+  
+  
+
+<meta name="author" content="Chia-Ching Wu" />
+
+
+<meta name="date" content="2022-05-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="multireg.html"/>
+<link rel="next" href="multisheets.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quick R for Statistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>前言</a></li>
+<li class="chapter" data-level="1" data-path="datainput.html"><a href="datainput.html"><i class="fa fa-check"></i><b>1</b> 資料的讀入與整理</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="datainput.html"><a href="datainput.html#讀入資料"><i class="fa fa-check"></i><b>1.1</b> 讀入資料</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="datainput.html"><a href="datainput.html#下載範例資料"><i class="fa fa-check"></i><b>1.1.1</b> 下載範例資料</a></li>
+<li class="chapter" data-level="1.1.2" data-path="datainput.html"><a href="datainput.html#設定工作目錄"><i class="fa fa-check"></i><b>1.1.2</b> 設定工作目錄</a></li>
+<li class="chapter" data-level="1.1.3" data-path="datainput.html"><a href="datainput.html#讀入檔案"><i class="fa fa-check"></i><b>1.1.3</b> 讀入檔案</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="datainput.html"><a href="datainput.html#資料檢視"><i class="fa fa-check"></i><b>1.2</b> 資料檢視</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="datainput.html"><a href="datainput.html#檢視資料類型"><i class="fa fa-check"></i><b>1.2.1</b> 檢視資料類型</a></li>
+<li class="chapter" data-level="1.2.2" data-path="datainput.html"><a href="datainput.html#資料類型的轉換"><i class="fa fa-check"></i><b>1.2.2</b> 資料類型的轉換</a></li>
+<li class="chapter" data-level="1.2.3" data-path="datainput.html"><a href="datainput.html#檢視各組人數"><i class="fa fa-check"></i><b>1.2.3</b> 檢視各組人數</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="datainput.html"><a href="datainput.html#分數的轉換和計算"><i class="fa fa-check"></i><b>1.3</b> 分數的轉換和計算</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="datainput.html"><a href="datainput.html#換為百分制"><i class="fa fa-check"></i><b>1.3.1</b> 換為百分制</a></li>
+<li class="chapter" data-level="1.3.2" data-path="datainput.html"><a href="datainput.html#將兩變項平均"><i class="fa fa-check"></i><b>1.3.2</b> 將兩變項平均</a></li>
+<li class="chapter" data-level="1.3.3" data-path="datainput.html"><a href="datainput.html#抽取部份資料加以計算"><i class="fa fa-check"></i><b>1.3.3</b> 抽取部份資料加以計算</a></li>
+<li class="chapter" data-level="1.3.4" data-path="datainput.html"><a href="datainput.html#資料數值的檢視與取代"><i class="fa fa-check"></i><b>1.3.4</b> 資料數值的檢視與取代</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="datainput.html"><a href="datainput.html#儲存資料"><i class="fa fa-check"></i><b>1.4</b> 儲存資料</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="datainput.html"><a href="datainput.html#儲存為rdata檔"><i class="fa fa-check"></i><b>1.4.1</b> 儲存為RData檔</a></li>
+<li class="chapter" data-level="1.4.2" data-path="datainput.html"><a href="datainput.html#儲存為csv檔"><i class="fa fa-check"></i><b>1.4.2</b> 儲存為csv檔</a></li>
+<li class="chapter" data-level="1.4.3" data-path="datainput.html"><a href="datainput.html#儲存為excel檔"><i class="fa fa-check"></i><b>1.4.3</b> 儲存為excel檔</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="descriptivestats.html"><a href="descriptivestats.html"><i class="fa fa-check"></i><b>2</b> 描述統計與作圖</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="descriptivestats.html"><a href="descriptivestats.html#讀入檔案-1"><i class="fa fa-check"></i><b>2.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="2.2" data-path="descriptivestats.html"><a href="descriptivestats.html#描述統計"><i class="fa fa-check"></i><b>2.2</b> 描述統計</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="descriptivestats.html"><a href="descriptivestats.html#計算單一變項的平均數變異數和標準差"><i class="fa fa-check"></i><b>2.2.1</b> 計算單一變項的平均數、變異數和標準差</a></li>
+<li class="chapter" data-level="2.2.2" data-path="descriptivestats.html"><a href="descriptivestats.html#計算多個變項的描述統計量"><i class="fa fa-check"></i><b>2.2.2</b> 計算多個變項的描述統計量</a></li>
+<li class="chapter" data-level="2.2.3" data-path="descriptivestats.html"><a href="descriptivestats.html#分組計算單一變項的描述性統計量"><i class="fa fa-check"></i><b>2.2.3</b> 分組計算單一變項的描述性統計量</a></li>
+<li class="chapter" data-level="2.2.4" data-path="descriptivestats.html"><a href="descriptivestats.html#分組計算多個變項的描述性統計量"><i class="fa fa-check"></i><b>2.2.4</b> 分組計算多個變項的描述性統計量</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="descriptivestats.html"><a href="descriptivestats.html#資料作圖和相關"><i class="fa fa-check"></i><b>2.3</b> 資料作圖和相關</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="descriptivestats.html"><a href="descriptivestats.html#直方圖"><i class="fa fa-check"></i><b>2.3.1</b> 直方圖</a></li>
+<li class="chapter" data-level="2.3.2" data-path="descriptivestats.html"><a href="descriptivestats.html#箱型圖"><i class="fa fa-check"></i><b>2.3.2</b> 箱型圖</a></li>
+<li class="chapter" data-level="2.3.3" data-path="descriptivestats.html"><a href="descriptivestats.html#散佈圖"><i class="fa fa-check"></i><b>2.3.3</b> 散佈圖</a></li>
+<li class="chapter" data-level="2.3.4" data-path="descriptivestats.html"><a href="descriptivestats.html#計算相關與繪圖"><i class="fa fa-check"></i><b>2.3.4</b> 計算相關與繪圖</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="hypotesting.html"><a href="hypotesting.html"><i class="fa fa-check"></i><b>3</b> 假設檢定</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="hypotesting.html"><a href="hypotesting.html#讀入檔案-2"><i class="fa fa-check"></i><b>3.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="3.2" data-path="hypotesting.html"><a href="hypotesting.html#常態檢定"><i class="fa fa-check"></i><b>3.2</b> 常態檢定</a></li>
+<li class="chapter" data-level="3.3" data-path="hypotesting.html"><a href="hypotesting.html#獨立樣本t檢定"><i class="fa fa-check"></i><b>3.3</b> 獨立樣本t檢定</a></li>
+<li class="chapter" data-level="3.4" data-path="hypotesting.html"><a href="hypotesting.html#相依樣本t檢定"><i class="fa fa-check"></i><b>3.4</b> 相依樣本t檢定</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="within1way.html"><a href="within1way.html"><i class="fa fa-check"></i><b>4</b> 相依樣本單因子變異數分析</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="within1way.html"><a href="within1way.html#資料準備"><i class="fa fa-check"></i><b>4.1</b> 資料準備</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="within1way.html"><a href="within1way.html#讀入檔案-3"><i class="fa fa-check"></i><b>4.1.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="4.1.2" data-path="within1way.html"><a href="within1way.html#準備可供變異數分析的資料"><i class="fa fa-check"></i><b>4.1.2</b> 準備可供變異數分析的資料</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="within1way.html"><a href="within1way.html#描述統計-1"><i class="fa fa-check"></i><b>4.2</b> 描述統計</a></li>
+<li class="chapter" data-level="4.3" data-path="within1way.html"><a href="within1way.html#變異數分析"><i class="fa fa-check"></i><b>4.3</b> 變異數分析</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="within1way.html"><a href="within1way.html#球型檢定與變異數分析"><i class="fa fa-check"></i><b>4.3.1</b> 球型檢定與變異數分析</a></li>
+<li class="chapter" data-level="4.3.2" data-path="within1way.html"><a href="within1way.html#多重比較"><i class="fa fa-check"></i><b>4.3.2</b> 多重比較</a></li>
+<li class="chapter" data-level="4.3.3" data-path="within1way.html"><a href="within1way.html#若未違反球型檢定"><i class="fa fa-check"></i><b>4.3.3</b> 若未違反球型檢定</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="between1way.html"><a href="between1way.html"><i class="fa fa-check"></i><b>5</b> 獨立樣本單因子變異數分析</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="between1way.html"><a href="between1way.html#資料準備-1"><i class="fa fa-check"></i><b>5.1</b> 資料準備</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="between1way.html"><a href="between1way.html#讀入檔案-4"><i class="fa fa-check"></i><b>5.1.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="5.1.2" data-path="between1way.html"><a href="between1way.html#準備可供變異數分析的資料-1"><i class="fa fa-check"></i><b>5.1.2</b> 準備可供變異數分析的資料</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="between1way.html"><a href="between1way.html#描述統計-2"><i class="fa fa-check"></i><b>5.2</b> 描述統計</a></li>
+<li class="chapter" data-level="5.3" data-path="between1way.html"><a href="between1way.html#獨立樣本變異數分析"><i class="fa fa-check"></i><b>5.3</b> 獨立樣本變異數分析</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="between1way.html"><a href="between1way.html#變異數同質性檢定"><i class="fa fa-check"></i><b>5.3.1</b> 變異數同質性檢定</a></li>
+<li class="chapter" data-level="5.3.2" data-path="between1way.html"><a href="between1way.html#變異數分析-1"><i class="fa fa-check"></i><b>5.3.2</b> 變異數分析</a></li>
+<li class="chapter" data-level="5.3.3" data-path="between1way.html"><a href="between1way.html#事後比較"><i class="fa fa-check"></i><b>5.3.3</b> 事後比較</a></li>
+<li class="chapter" data-level="5.3.4" data-path="between1way.html"><a href="between1way.html#變異數不同質時"><i class="fa fa-check"></i><b>5.3.4</b> 變異數不同質時</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="mixed2way.html"><a href="mixed2way.html"><i class="fa fa-check"></i><b>6</b> 混合樣本二因子變異數分析</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="mixed2way.html"><a href="mixed2way.html#資料準備-2"><i class="fa fa-check"></i><b>6.1</b> 資料準備</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="mixed2way.html"><a href="mixed2way.html#讀入檔案-5"><i class="fa fa-check"></i><b>6.1.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="6.1.2" data-path="mixed2way.html"><a href="mixed2way.html#準備可供變異數分析的資料-2"><i class="fa fa-check"></i><b>6.1.2</b> 準備可供變異數分析的資料</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="mixed2way.html"><a href="mixed2way.html#描述統計-3"><i class="fa fa-check"></i><b>6.2</b> 描述統計</a></li>
+<li class="chapter" data-level="6.3" data-path="mixed2way.html"><a href="mixed2way.html#變異數分析-2"><i class="fa fa-check"></i><b>6.3</b> 變異數分析</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="mixed2way.html"><a href="mixed2way.html#事後比較-1"><i class="fa fa-check"></i><b>6.3.1</b> 事後比較</a></li>
+<li class="chapter" data-level="6.3.2" data-path="mixed2way.html"><a href="mixed2way.html#交互作用未顯著時的事後比較"><i class="fa fa-check"></i><b>6.3.2</b> 交互作用未顯著時的事後比較</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="multireg.html"><a href="multireg.html"><i class="fa fa-check"></i><b>7</b> 多元迴歸</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="multireg.html"><a href="multireg.html#資料的準備與檢視"><i class="fa fa-check"></i><b>7.1</b> 資料的準備與檢視</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="multireg.html"><a href="multireg.html#讀入檔案-6"><i class="fa fa-check"></i><b>7.1.1</b> 讀入檔案</a></li>
+<li class="chapter" data-level="7.1.2" data-path="multireg.html"><a href="multireg.html#檢視相關"><i class="fa fa-check"></i><b>7.1.2</b> 檢視相關</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="multireg.html"><a href="multireg.html#迴歸分析"><i class="fa fa-check"></i><b>7.2</b> 迴歸分析</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="multireg.html"><a href="multireg.html#簡單迴歸"><i class="fa fa-check"></i><b>7.2.1</b> 簡單迴歸</a></li>
+<li class="chapter" data-level="7.2.2" data-path="multireg.html"><a href="multireg.html#多元迴歸"><i class="fa fa-check"></i><b>7.2.2</b> 多元迴歸</a></li>
+<li class="chapter" data-level="7.2.3" data-path="multireg.html"><a href="multireg.html#迴歸模型的比較"><i class="fa fa-check"></i><b>7.2.3</b> 迴歸模型的比較</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="multireg.html"><a href="multireg.html#迴歸假設的檢驗"><i class="fa fa-check"></i><b>7.3</b> 迴歸假設的檢驗</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="multireg.html"><a href="multireg.html#極端數值的影響"><i class="fa fa-check"></i><b>7.3.1</b> 極端數值的影響</a></li>
+<li class="chapter" data-level="7.3.2" data-path="multireg.html"><a href="multireg.html#homoscedasticity診斷"><i class="fa fa-check"></i><b>7.3.2</b> Homoscedasticity診斷</a></li>
+<li class="chapter" data-level="7.3.3" data-path="multireg.html"><a href="multireg.html#共線性multicollinearity的檢驗"><i class="fa fa-check"></i><b>7.3.3</b> 共線性multicollinearity的檢驗</a></li>
+<li class="chapter" data-level="7.3.4" data-path="multireg.html"><a href="multireg.html#誤差常態的檢定"><i class="fa fa-check"></i><b>7.3.4</b> 誤差常態的檢定</a></li>
+<li class="chapter" data-level="7.3.5" data-path="multireg.html"><a href="multireg.html#自相關檢驗"><i class="fa fa-check"></i><b>7.3.5</b> 自相關檢驗</a></li>
+<li class="chapter" data-level="7.3.6" data-path="multireg.html"><a href="multireg.html#綜合檢驗"><i class="fa fa-check"></i><b>7.3.6</b> 綜合檢驗</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="multireg.html"><a href="multireg.html#逐步迴歸"><i class="fa fa-check"></i><b>7.4</b> 逐步迴歸</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="multireg.html"><a href="multireg.html#前向法"><i class="fa fa-check"></i><b>7.4.1</b> 前向法</a></li>
+<li class="chapter" data-level="7.4.2" data-path="multireg.html"><a href="multireg.html#後向法"><i class="fa fa-check"></i><b>7.4.2</b> 後向法</a></li>
+<li class="chapter" data-level="7.4.3" data-path="multireg.html"><a href="multireg.html#逐步法"><i class="fa fa-check"></i><b>7.4.3</b> 逐步法</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="multireg.html"><a href="multireg.html#類別變項的迴歸"><i class="fa fa-check"></i><b>7.5</b> 類別變項的迴歸</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="modemediation.html"><a href="modemediation.html"><i class="fa fa-check"></i><b>8</b> 調節與中介</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="modemediation.html"><a href="modemediation.html#讀入資料-1"><i class="fa fa-check"></i><b>8.1</b> 讀入資料</a></li>
+<li class="chapter" data-level="8.2" data-path="modemediation.html"><a href="modemediation.html#調節變項為類別變項"><i class="fa fa-check"></i><b>8.2</b> 調節變項為類別變項</a></li>
+<li class="chapter" data-level="8.3" data-path="modemediation.html"><a href="modemediation.html#調節變項為連續變項"><i class="fa fa-check"></i><b>8.3</b> 調節變項為連續變項</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="multisheets.html"><a href="multisheets.html"><i class="fa fa-check"></i><b>9</b> 多個EXCEL檔的資料匯整與分析</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="multisheets.html"><a href="multisheets.html#學習成效分析"><i class="fa fa-check"></i><b>9.1</b> 學習成效分析</a></li>
+<li class="chapter" data-level="9.2" data-path="multisheets.html"><a href="multisheets.html#讀入單一工作表並抽取所需資料"><i class="fa fa-check"></i><b>9.2</b> 讀入單一工作表並抽取所需資料</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="multisheets.html"><a href="multisheets.html#簡化程式"><i class="fa fa-check"></i><b>9.2.1</b> 簡化程式</a></li>
+<li class="chapter" data-level="9.2.2" data-path="multisheets.html"><a href="multisheets.html#寫成函數"><i class="fa fa-check"></i><b>9.2.2</b> 寫成函數</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="multisheets.html"><a href="multisheets.html#讀取一個檔案的多個工作表"><i class="fa fa-check"></i><b>9.3</b> 讀取一個檔案的多個工作表</a></li>
+<li class="chapter" data-level="9.4" data-path="multisheets.html"><a href="multisheets.html#以for迴圈讀入檔案中的所有工作表"><i class="fa fa-check"></i><b>9.4</b> 以for迴圈讀入檔案中的所有工作表</a></li>
+<li class="chapter" data-level="9.5" data-path="multisheets.html"><a href="multisheets.html#讀入多個檔案"><i class="fa fa-check"></i><b>9.5</b> 讀入多個檔案</a></li>
+<li class="chapter" data-level="9.6" data-path="multisheets.html"><a href="multisheets.html#集大成的程式碼"><i class="fa fa-check"></i><b>9.6</b> 集大成的程式碼</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href=" " target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Quick R for Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modemediation" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">Chapter 8</span> 調節與中介<a href="modemediation.html#modemediation" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>本單元介紹如何以R語言做調節與中介分析。</p>
+<div id="讀入資料-1" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> 讀入資料<a href="modemediation.html#讀入資料-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modemediation.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;D:</span><span class="sc">\\</span><span class="st">Dropbox</span><span class="sc">\\</span><span class="st">Working</span><span class="sc">\\</span><span class="st">教師社群&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modemediation.html#cb2-1" aria-hidden="true" tabindex="-1"></a>cData <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;moderation.csv&quot;</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+</div>
+<div id="調節變項為類別變項" class="section level2 hasAnchor" number="8.2">
+<h2><span class="header-section-number">8.2</span> 調節變項為類別變項<a href="modemediation.html#調節變項為類別變項" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>將affection中心化的結果：可知兩模型皆顯著。加入交互作用的模型比未加入的模型可以多解釋9%的變異量，此增加的解釋量達到顯著，diff R^2 = .09, F(1,96) = 64.1, p &lt; .001。迴歸式為closeness = 6.36873 + 0.41746 affection - 4.42985 * genderM - 0.37521 * affection * genderM。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="modemediation.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pequod)</span></code></pre></div>
+<pre><code>## Warning: 套件 &#39;pequod&#39; 是用 R 版本 4.1.3 來建造的</code></pre>
+<pre><code>## 載入需要的套件：ggplot2</code></pre>
+<pre><code>## 載入需要的套件：car</code></pre>
+<pre><code>## 載入需要的套件：carData</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="modemediation.html#cb8-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lmres</span>(closeness<span class="sc">~</span>affection<span class="sc">*</span>gender, <span class="at">centered=</span><span class="fu">c</span>(<span class="st">&quot;affection&quot;</span>), <span class="at">data=</span>cData)</span>
+<span id="cb8-2"><a href="modemediation.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1, <span class="at">type=</span><span class="st">&quot;nested&quot;</span>)</span></code></pre></div>
+<pre><code>## **Models**
+## 
+## Model 1: closeness ~ affection + genderMale
+## &lt;environment: 0x0000000015e8e688&gt;
+## 
+## Model 2: closeness ~ affection + genderMale + affection.XX.genderMale
+## &lt;environment: 0x0000000015e8e688&gt;
+## 
+## 
+## **Statistics**
+## 
+##             R     R^2   Adj. R^2   Diff.R^2    F     df1  df2    p.value    
+## Model 1    0.88   0.77      0.76       0.77 160.04   2.00   97 &lt; 2.2e-16 ***
+## Model 2:   0.93   0.86      0.86       0.09 197.52   3.00   96 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## **F change**
+## 
+##   Res.Df RSS  Df Sum of Sq    F  Pr(&gt;F)    
+## 1     97 177                               
+## 2     96 106   1        71 64.1 2.7e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## **Coefficients**
+## 
+##                          Estimate    StdErr   t.value    beta   p.value    
+## -- Model 1 --                                                              
+##                                                                            
+## (Intercept)               6.29135   0.19168  32.82144         &lt; 2.2e-16 ***
+## affection                 0.26269   0.02963   8.86462  0.4367 &lt; 2.2e-16 ***
+## genderMale               -4.46269   0.27189 -16.41354 -0.8085 &lt; 2.2e-16 ***
+##                                                                            
+##                                                                            
+## -- Model 2 --                                                              
+##                                                                            
+## (Intercept)               6.36873   0.14950  42.60126         &lt; 2.2e-16 ***
+## affection                 0.41746   0.03009  13.87403  0.6939 &lt; 2.2e-16 ***
+## genderMale               -4.42985   0.21165 -20.93042 -0.8026 &lt; 2.2e-16 ***
+## affection.XX.genderMale  -0.37521   0.04685  -8.00877 -0.3996 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Simple slope分析。可以看gender和affection在正負一個標準差時的預測值。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="modemediation.html#cb10-1" aria-hidden="true" tabindex="-1"></a>Sim_m1 <span class="ot">&lt;-</span> <span class="fu">simpleSlope</span>(m1, <span class="at">pred=</span><span class="st">&quot;affection&quot;</span>, <span class="at">mod1=</span><span class="st">&quot;genderMale&quot;</span>, <span class="at">coded=</span><span class="st">&quot;genderMale&quot;</span>)</span>
+<span id="cb10-2"><a href="modemediation.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Sim_m1)</span></code></pre></div>
+<pre><code>## 
+## ** Estimated points of closeness  **
+## 
+##                       Low affection (-1 SD) High affection (+1 SD)
+## Low genderMale ( 0 )                 4.4440                 8.2935
+## High genderMale ( 1 )                1.7441                 2.1337
+## 
+## 
+## 
+## ** Simple Slopes analysis ( df= 96 ) **
+## 
+##                       simple slope standard error t-value p.value    
+## Low genderMale ( 0 )        0.4175         0.0301   13.87  &lt;2e-16 ***
+## High genderMale ( 1 )       0.0422         0.0359    1.18    0.24    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## 
+## ** Bauer &amp; Curran 95% CI **
+## 
+##            lower CI upper CI
+## genderMale   0.9366   1.3778</code></pre>
+<p>Simple Slope作圖。可畫出調節變項在正負一個標準差時的圖。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="modemediation.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotSlope</span>(Sim_m1)</span></code></pre></div>
+<p><img src="quick-r-statistics_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="調節變項為連續變項" class="section level2 hasAnchor" number="8.3">
+<h2><span class="header-section-number">8.3</span> 調節變項為連續變項<a href="modemediation.html#調節變項為連續變項" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>模型與上面相同。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="modemediation.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pequod)</span>
+<span id="cb13-2"><a href="modemediation.html#cb13-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmres</span>(closeness<span class="sc">~</span>gender<span class="sc">*</span>affection, <span class="at">centered=</span><span class="fu">c</span>(<span class="st">&quot;affection&quot;</span>), <span class="at">data=</span>cData)</span>
+<span id="cb13-3"><a href="modemediation.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2, <span class="at">type=</span><span class="st">&quot;nested&quot;</span>)</span></code></pre></div>
+<pre><code>## **Models**
+## 
+## Model 1: closeness ~ genderMale + affection
+## &lt;environment: 0x0000000022785550&gt;
+## 
+## Model 2: closeness ~ genderMale + affection + genderMale.XX.affection
+## &lt;environment: 0x0000000022785550&gt;
+## 
+## 
+## **Statistics**
+## 
+##             R     R^2   Adj. R^2   Diff.R^2    F     df1  df2    p.value    
+## Model 1    0.88   0.77      0.76       0.77 160.04   2.00   97 &lt; 2.2e-16 ***
+## Model 2:   0.93   0.86      0.86       0.09 197.52   3.00   96 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## **F change**
+## 
+##   Res.Df RSS  Df Sum of Sq    F  Pr(&gt;F)    
+## 1     97 177                               
+## 2     96 106   1        71 64.1 2.7e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## **Coefficients**
+## 
+##                          Estimate    StdErr   t.value    beta   p.value    
+## -- Model 1 --                                                              
+##                                                                            
+## (Intercept)               6.29135   0.19168  32.82144         &lt; 2.2e-16 ***
+## genderMale               -4.46269   0.27189 -16.41354 -0.8085 &lt; 2.2e-16 ***
+## affection                 0.26269   0.02963   8.86462  0.4367 &lt; 2.2e-16 ***
+##                                                                            
+##                                                                            
+## -- Model 2 --                                                              
+##                                                                            
+## (Intercept)               6.36873   0.14950  42.60126         &lt; 2.2e-16 ***
+## genderMale               -4.42985   0.21165 -20.93042 -0.8026 &lt; 2.2e-16 ***
+## affection                 0.41746   0.03009  13.87403  0.6939 &lt; 2.2e-16 ***
+## genderMale.XX.affection  -0.37521   0.04685  -8.00877 -0.3996 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>同樣做simple slope分析。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="modemediation.html#cb15-1" aria-hidden="true" tabindex="-1"></a>Sim_m2 <span class="ot">&lt;-</span> <span class="fu">simpleSlope</span>(m1, <span class="at">pred=</span><span class="st">&quot;genderMale&quot;</span>, <span class="at">mod1=</span><span class="st">&quot;affection&quot;</span>)</span>
+<span id="cb15-2"><a href="modemediation.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Sim_m2)</span></code></pre></div>
+<pre><code>## 
+## ** Estimated points of closeness  **
+## 
+##                        Low genderMale (-1 SD) High genderMale (+1 SD)
+## Low affection (-1 SD)                  4.4508                  1.7373
+## High affection (+1 SD)                 8.3090                  2.1182
+## 
+## 
+## 
+## ** Simple Slopes analysis ( df= 96 ) **
+## 
+##                        simple slope standard error t-value p.value    
+## Low affection (-1 SD)        -2.700          0.305   -8.84  &lt;2e-16 ***
+## High affection (+1 SD)       -6.160          0.300  -20.57  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## 
+## ** Bauer &amp; Curran 95% CI **
+## 
+##           lower CI upper CI
+## affection  -15.864  -9.2647</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="modemediation.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PlotSlope</span>(Sim_m2)</span></code></pre></div>
+<p><img src="quick-r-statistics_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+另一種作法。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="modemediation.html#cb18-1" aria-hidden="true" tabindex="-1"></a>cData<span class="sc">$</span>affectionC <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">scale</span>(cData<span class="sc">$</span>affection, <span class="at">center=</span><span class="cn">TRUE</span>, <span class="at">scale=</span><span class="cn">FALSE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="modemediation.html#cb19-1" aria-hidden="true" tabindex="-1"></a>res0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(closeness <span class="sc">~</span> affectionC <span class="sc">+</span> gender, <span class="at">data=</span>cData)</span>
+<span id="cb19-2"><a href="modemediation.html#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res0)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = closeness ~ affectionC + gender, data = cData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.3733 -0.8598  0.2029  0.8282  3.0625 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  6.29135    0.19168  32.821  &lt; 2e-16 ***
+## affectionC   0.26269    0.02963   8.865 3.78e-14 ***
+## genderMale  -4.46269    0.27189 -16.414  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.351 on 97 degrees of freedom
+## Multiple R-squared:  0.7674, Adjusted R-squared:  0.7626 
+## F-statistic:   160 on 2 and 97 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="modemediation.html#cb21-1" aria-hidden="true" tabindex="-1"></a>res1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(closeness <span class="sc">~</span> affectionC <span class="sc">+</span> gender <span class="sc">+</span> affectionC<span class="sc">*</span>gender, <span class="at">data=</span>cData)</span>
+<span id="cb21-2"><a href="modemediation.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = closeness ~ affectionC + gender + affectionC * gender, 
+##     data = cData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.18730 -0.74369 -0.06341  0.68137  2.89720 
+## 
+## Coefficients:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            6.36873    0.14950  42.601  &lt; 2e-16 ***
+## affectionC             0.41746    0.03009  13.874  &lt; 2e-16 ***
+## genderMale            -4.42985    0.21165 -20.930  &lt; 2e-16 ***
+## affectionC:genderMale -0.37521    0.04685  -8.009 2.72e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.052 on 96 degrees of freedom
+## Multiple R-squared:  0.8606, Adjusted R-squared:  0.8562 
+## F-statistic: 197.5 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="modemediation.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(res0, res1)</span></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: closeness ~ affectionC + gender
+## Model 2: closeness ~ affectionC + gender + affectionC * gender
+##   Res.Df    RSS Df Sum of Sq     F    Pr(&gt;F)    
+## 1     97 177.14                                 
+## 2     96 106.19  1    70.948 64.14 2.722e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="modemediation.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(processR)</span></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;broom&#39;:
+##   method            from  
+##   tidy.glht         jtools
+##   tidy.summary.glht jtools</code></pre>
+<pre><code>## 
+## 載入套件：&#39;processR&#39;</code></pre>
+<pre><code>## 下列物件被遮斷自 &#39;package:car&#39;:
+## 
+##     densityPlot, qqPlot</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="modemediation.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsSummary</span>(res1)</span></code></pre></div>
+<pre><code>## =============================================================== 
+##                                        Consequent               
+##                          -------------------------------------- 
+##                                        closeness              
+##                          -------------------------------------  
+##        Antecedent               Coef     SE      t       p     
+## --------------------------------------------------------------- 
+##        affectionC         b1   0.417   0.030  13.874   &lt;.001  
+##        genderMale         b2  -4.430   0.212  -20.930   &lt;.001  
+##   affectionC:genderMale   b3  -0.375   0.047  -8.009   &lt;.001  
+##         Constant          iy   6.369   0.149  42.601   &lt;.001  
+## --------------------------------------------------------------- 
+##       Observations                        100                 
+##            R2                            0.861                
+##        Adjusted R2                       0.856                
+##        Residual SE                 1.052 ( df = 96)           
+##        F statistic            F(3,96) = 197.519, p &lt; .001     
+## ===============================================================</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="multireg.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multisheets.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["quick-r-statistics.pdf", "quick-r-statistics.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

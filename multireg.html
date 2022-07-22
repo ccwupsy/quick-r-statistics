@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 7 多元迴歸 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 7 多元迴歸 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 7 多元迴歸 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content="以R語言內建的mtcars做多元迴歸。  7.1 資料的準備與檢視  7.1.1 讀入檔案 讀入mtcars檔案。mtcars是R內建的dataset，為1974年美國的Motor Trend雜誌對32種車款在11項設計與表現所做的整理，包含油耗量（mpg）、氣缸數（cyl）、排氣量（disp）、馬力（hp）、車體重量（wt）、加速時間（qsec）等。 data(mtcars)...">
+<meta property="og:description" content="以R語言內建的mtcars做多元迴歸。  7.1 資料的準備與檢視  7.1.1 讀入檔案 讀入mtcars檔案。mtcars是R內建的dataset，為1974年美國的Motor Trend雜誌對32種車款在11項設計與表現所做的整理，包含油耗量（mpg）、氣缸數（cyl）、排氣量（disp）、馬力（hp）、車體重量（wt）、加速時間（qsec）等。 data(mtcars)...">
+<meta name="twitter:description" content="以R語言內建的mtcars做多元迴歸。  7.1 資料的準備與檢視  7.1.1 讀入檔案 讀入mtcars檔案。mtcars是R內建的dataset，為1974年美國的Motor Trend雜誌對32種車款在11項設計與表現所做的整理，包含油耗量（mpg）、氣缸數（cyl）、排氣量（disp）、馬力（hp）、車體重量（wt）、加速時間（qsec）等。 data(mtcars)...">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="active" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="multireg" class="section level1" number="7">
+<h1>
+<span class="header-section-number">7</span> 多元迴歸<a class="anchor" aria-label="anchor" href="#multireg"><i class="fas fa-link"></i></a>
+</h1>
+<p>以R語言內建的mtcars做多元迴歸。</p>
+<div id="資料的準備與檢視" class="section level2" number="7.1">
+<h2>
+<span class="header-section-number">7.1</span> 資料的準備與檢視<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E7%9A%84%E6%BA%96%E5%82%99%E8%88%87%E6%AA%A2%E8%A6%96"><i class="fas fa-link"></i></a>
+</h2>
+<div id="讀入檔案-6" class="section level3" number="7.1.1">
+<h3>
+<span class="header-section-number">7.1.1</span> 讀入檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-6"><i class="fas fa-link"></i></a>
+</h3>
+<p>讀入mtcars檔案。mtcars是R內建的dataset，為1974年美國的Motor Trend雜誌對32種車款在11項設計與表現所做的整理，包含油耗量（mpg）、氣缸數（cyl）、排氣量（disp）、馬力（hp）、車體重量（wt）、加速時間（qsec）等。</p>
+<div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<pre><code>##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Merc 230          22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Merc 280          19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4</code></pre>
+</div>
+<div id="檢視相關" class="section level3" number="7.1.2">
+<h3>
+<span class="header-section-number">7.1.2</span> 檢視相關<a class="anchor" aria-label="anchor" href="#%E6%AA%A2%E8%A6%96%E7%9B%B8%E9%97%9C"><i class="fas fa-link"></i></a>
+</h3>
+<p>先用plot()看各變項的關鍵性。</p>
+<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-105-1.png" width="672"></div>
+<p>計算各變項的相關。</p>
+<div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://hbiostat.org/R/Hmisc/">Hmisc</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.html">rcorr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.matrix.html">data.matrix</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##        mpg   cyl  disp    hp  drat    wt  qsec
+## mpg   1.00 -0.85 -0.85 -0.78  0.68 -0.87  0.42
+## cyl  -0.85  1.00  0.90  0.83 -0.70  0.78 -0.59
+## disp -0.85  0.90  1.00  0.79 -0.71  0.89 -0.43
+## hp   -0.78  0.83  0.79  1.00 -0.45  0.66 -0.71
+## drat  0.68 -0.70 -0.71 -0.45  1.00 -0.71  0.09
+## wt   -0.87  0.78  0.89  0.66 -0.71  1.00 -0.17
+## qsec  0.42 -0.59 -0.43 -0.71  0.09 -0.17  1.00
+## 
+## n= 32 
+## 
+## 
+## P
+##      mpg    cyl    disp   hp     drat   wt     qsec  
+## mpg         0.0000 0.0000 0.0000 0.0000 0.0000 0.0171
+## cyl  0.0000        0.0000 0.0000 0.0000 0.0000 0.0004
+## disp 0.0000 0.0000        0.0000 0.0000 0.0000 0.0131
+## hp   0.0000 0.0000 0.0000        0.0100 0.0000 0.0000
+## drat 0.0000 0.0000 0.0000 0.0100        0.0000 0.6196
+## wt   0.0000 0.0000 0.0000 0.0000 0.0000        0.3389
+## qsec 0.0171 0.0004 0.0131 0.0000 0.6196 0.3389</code></pre>
+</div>
+</div>
+<div id="迴歸分析" class="section level2" number="7.2">
+<h2>
+<span class="header-section-number">7.2</span> 迴歸分析<a class="anchor" aria-label="anchor" href="#%E8%BF%B4%E6%AD%B8%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<div id="簡單迴歸" class="section level3" number="7.2.1">
+<h3>
+<span class="header-section-number">7.2.1</span> 簡單迴歸<a class="anchor" aria-label="anchor" href="#%E7%B0%A1%E5%96%AE%E8%BF%B4%E6%AD%B8"><i class="fas fa-link"></i></a>
+</h3>
+<p>以lm()檢驗是否可以用車體重量（wt）預測油耗量（mpg）。結果顯示R-square = 0.75，F(1,30) = 91.38，p&lt;.001，F檢定顯著，模型有良好解釋力。迴歸式為 mpg = -5.3445*wt + 37.2851。</p>
+<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model.mpg.wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.mpg.wt</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5432 -2.3647 -0.1252  1.4096  6.8727 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  37.2851     1.8776  19.858  &lt; 2e-16 ***
+## wt           -5.3445     0.5591  -9.559 1.29e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.046 on 30 degrees of freedom
+## Multiple R-squared:  0.7528, Adjusted R-squared:  0.7446 
+## F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10</code></pre>
+<p>以package visreg的visreg()函數來畫迴歸線。</p>
+<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg">visreg</a></span><span class="op">)</span>
+<span class="fu"><a href="http://pbreheny.github.io/visreg/reference/visreg.html">visreg</a></span><span class="op">(</span><span class="va">model.mpg.wt</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-108-1.png" width="672"></div>
+</div>
+<div id="多元迴歸" class="section level3" number="7.2.2">
+<h3>
+<span class="header-section-number">7.2.2</span> 多元迴歸<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E5%85%83%E8%BF%B4%E6%AD%B8"><i class="fas fa-link"></i></a>
+</h3>
+<p>以車體重量（wt）、馬力（hp）和排氣量（disp）來預測油耗量（mpg）。相關分析顯示三個預測項與油耗量皆為負相關。</p>
+<p>以lm()來做迴歸分析，迴歸分析結果顯示，R-square = 0.8268，F(3,28) = 44.57, p &lt; .01。disp沒有顯著。</p>
+<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model.mpg.whd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span><span class="va">model.mpg.wt</span>, <span class="va">.</span><span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">disp</span>, data<span class="op">=</span><span class="va">mtcars</span><span class="op">)</span>
+<span class="va">model.mpg.whd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">disp</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp + disp, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.891 -1.640 -0.172  1.061  5.861 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.105505   2.110815  17.579  &lt; 2e-16 ***
+## wt          -3.800891   1.066191  -3.565  0.00133 ** 
+## hp          -0.031157   0.011436  -2.724  0.01097 *  
+## disp        -0.000937   0.010350  -0.091  0.92851    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.639 on 28 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8083 
+## F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
+<p>若想進一步看淨相關和半淨相關，可用pcor()做淨相關(partial correlation)、用spcor()做半淨相關(semi-partial correlation)。淨相關結果顯示，三變項皆顯著相關，all ps &lt; .05。</p>
+<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ppcor</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ppcor/man/pcor.html">pcor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span>, <span class="fl">03</span><span class="op">)</span> <span class="co">#partial</span></code></pre></div>
+<pre><code>##         mpg     wt     hp   disp
+## mpg   1.000 -0.559 -0.458 -0.017
+## wt   -0.559  1.000 -0.370  0.651
+## hp   -0.458 -0.370  1.000  0.521
+## disp -0.017  0.651  0.521  1.000</code></pre>
+<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ppcor/man/pcor.html">pcor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">p.value</span>, <span class="fl">03</span><span class="op">)</span></code></pre></div>
+<pre><code>##        mpg    wt    hp  disp
+## mpg  0.000 0.001 0.011 0.929
+## wt   0.001 0.000 0.044 0.000
+## hp   0.011 0.044 0.000 0.003
+## disp 0.929 0.000 0.003 0.000</code></pre>
+<p>半淨相關結果顯示，僅wt顯著相關。</p>
+<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ppcor/man/spcor.html">spcor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span>, <span class="fl">03</span><span class="op">)</span> <span class="co">#semi-partial</span></code></pre></div>
+<pre><code>##         mpg     wt     hp   disp
+## mpg   1.000 -0.280 -0.214 -0.007
+## wt   -0.254  1.000 -0.150  0.323
+## hp   -0.277 -0.214  1.000  0.328
+## disp -0.006  0.317  0.226  1.000</code></pre>
+<div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ppcor/man/spcor.html">spcor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">p.value</span>, <span class="fl">03</span><span class="op">)</span></code></pre></div>
+<pre><code>##        mpg    wt    hp  disp
+## mpg  0.000 0.133 0.256 0.970
+## wt   0.176 0.000 0.429 0.081
+## hp   0.139 0.256 0.000 0.076
+## disp 0.974 0.088 0.230 0.000</code></pre>
+<p>看各變項對mpg的關係。</p>
+<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="http://pbreheny.github.io/visreg/reference/visreg.html">visreg</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<p><img src="quick-r-statistics_files/figure-html/unnamed-chunk-112-1.png" width="672"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-112-2.png" width="672"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-112-3.png" width="672"></p>
+<p>以predict()來做預測。</p>
+<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model.mpg.whd</span>,
+        new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>wt <span class="op">=</span> <span class="fl">5</span>, hp <span class="op">=</span> <span class="fl">250</span>, disp <span class="op">=</span> <span class="fl">300</span>, am <span class="op">=</span> <span class="st">"Manual"</span><span class="op">)</span>,
+        interval <span class="op">=</span> <span class="st">"confidence"</span>,
+        level <span class="op">=</span> <span class="fl">.95</span>
+<span class="op">)</span></code></pre></div>
+<pre><code>##        fit      lwr      upr
+## 1 10.03081 6.335154 13.72647</code></pre>
+</div>
+<div id="迴歸模型的比較" class="section level3" number="7.2.3">
+<h3>
+<span class="header-section-number">7.2.3</span> 迴歸模型的比較<a class="anchor" aria-label="anchor" href="#%E8%BF%B4%E6%AD%B8%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%AF%94%E8%BC%83"><i class="fas fa-link"></i></a>
+</h3>
+<p>以ANOVA()來比較兩個迴歸模型。結果顯示三預測項的模型顯著優於一預測項模型。F(2, 83.33) = 5.98, p&lt;.001。</p>
+<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">model.mpg.wt</span>, <span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ wt
+## Model 2: mpg ~ wt + hp + disp
+##   Res.Df    RSS Df Sum of Sq     F   Pr(&gt;F)   
+## 1     30 278.32                               
+## 2     28 194.99  2    83.331 5.983 0.006863 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>用AIC()來看兩個模型的AIC(Akaike information criterion)。結果顯示相較於一個預測項時，以三個預測項來預測mpg時，AIC有下降。</p>
+<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">model.mpg.wt</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 166.0294</code></pre>
+<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 158.643</code></pre>
+</div>
+</div>
+<div id="迴歸假設的檢驗" class="section level2" number="7.3">
+<h2>
+<span class="header-section-number">7.3</span> 迴歸假設的檢驗<a class="anchor" aria-label="anchor" href="#%E8%BF%B4%E6%AD%B8%E5%81%87%E8%A8%AD%E7%9A%84%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h2>
+<p>檢驗資料是否符合迴歸分析的假設。</p>
+<div id="極端數值的影響" class="section level3" number="7.3.1">
+<h3>
+<span class="header-section-number">7.3.1</span> 極端數值的影響<a class="anchor" aria-label="anchor" href="#%E6%A5%B5%E7%AB%AF%E6%95%B8%E5%80%BC%E7%9A%84%E5%BD%B1%E9%9F%BF"><i class="fas fa-link"></i></a>
+</h3>
+<p>standardize resuduals和studentize residuals。</p>
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://olsrr.rsquaredacademy.com/">olsrr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_resid_stand.html">ols_plot_resid_stand</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-117-1.png" width="672"></div>
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_resid_stud.html">ols_plot_resid_stud</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-118-1.png" width="672"></div>
+<p>極端數值移除後對迴歸式的影響。</p>
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_dfbetas.html">ols_plot_dfbetas</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-119-1.png" width="672"></div>
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_dffits.html">ols_plot_dffits</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-120-1.png" width="672"></div>
+<p>以Cook’s distance看極端數值對整個模型的影響。</p>
+<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_cooksd_bar.html">ols_plot_cooksd_bar</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-121-1.png" width="672"></div>
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_cooksd_chart.html">ols_plot_cooksd_chart</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-121-2.png" width="672"></div>
+<p>看residual和leverage。</p>
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://olsrr.rsquaredacademy.com/">olsrr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_resid_lev.html">ols_plot_resid_lev</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-122-1.png" width="672"></div>
+</div>
+<div id="homoscedasticity診斷" class="section level3" number="7.3.2">
+<h3>
+<span class="header-section-number">7.3.2</span> Homoscedasticity診斷<a class="anchor" aria-label="anchor" href="#homoscedasticity%E8%A8%BA%E6%96%B7"><i class="fas fa-link"></i></a>
+</h3>
+<p>看residual和fit。</p>
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://olsrr.rsquaredacademy.com/reference/ols_plot_resid_stud_fit.html">ols_plot_resid_stud_fit</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-123-1.png" width="672"></div>
+</div>
+<div id="共線性multicollinearity的檢驗" class="section level3" number="7.3.3">
+<h3>
+<span class="header-section-number">7.3.3</span> 共線性multicollinearity的檢驗<a class="anchor" aria-label="anchor" href="#%E5%85%B1%E7%B7%9A%E6%80%A7multicollinearity%E7%9A%84%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>看vif和tolerance。最大的VIF大於10要注意、平均的VIF大於1可能有偏誤；tolerance小於0.1要注意、tolerance小於0.2可能有問題。</p>
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-forge.r-project.org/projects/car/">car</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/car/man/vif.html">vif</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>##       wt       hp     disp 
+## 4.844618 2.736633 7.324517</code></pre>
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/vif.html">vif</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>##        wt        hp      disp 
+## 0.2064146 0.3654126 0.1365278</code></pre>
+</div>
+<div id="誤差常態的檢定" class="section level3" number="7.3.4">
+<h3>
+<span class="header-section-number">7.3.4</span> 誤差常態的檢定<a class="anchor" aria-label="anchor" href="#%E8%AA%A4%E5%B7%AE%E5%B8%B8%E6%85%8B%E7%9A%84%E6%AA%A2%E5%AE%9A"><i class="fas fa-link"></i></a>
+</h3>
+<p>residuals常態分配的檢定。</p>
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">residuals</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  residuals(model.mpg.whd)
+## W = 0.92734, p-value = 0.03305</code></pre>
+</div>
+<div id="自相關檢驗" class="section level3" number="7.3.5">
+<h3>
+<span class="header-section-number">7.3.5</span> 自相關檢驗<a class="anchor" aria-label="anchor" href="#%E8%87%AA%E7%9B%B8%E9%97%9C%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>用Durbin-Watson test看是否有autocorrelation。</p>
+<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-forge.r-project.org/projects/car/">car</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/car/man/durbinWatsonTest.html">dwt</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>##  lag Autocorrelation D-W Statistic p-value
+##    1       0.2926117      1.367284    0.03
+##  Alternative hypothesis: rho != 0</code></pre>
+<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/car/man/durbinWatsonTest.html">durbinWatsonTest</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<pre><code>##  lag Autocorrelation D-W Statistic p-value
+##    1       0.2926117      1.367284    0.04
+##  Alternative hypothesis: rho != 0</code></pre>
+</div>
+<div id="綜合檢驗" class="section level3" number="7.3.6">
+<h3>
+<span class="header-section-number">7.3.6</span> 綜合檢驗<a class="anchor" aria-label="anchor" href="#%E7%B6%9C%E5%90%88%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>可用內建的plot()功能一次看上述檢驗。若加which=1:6可看更多。</p>
+<div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<p><img src="quick-r-statistics_files/figure-html/unnamed-chunk-127-1.png" width="672"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-127-2.png" width="672"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-127-3.png" width="672"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-127-4.png" width="672"></p>
+<p>也可以將圖表放在一起看。</p>
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-128-1.png" width="672"></div>
+<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>或以performance這個package來看迴歸的假設。</p>
+<div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/performance/">performance</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/see/">see</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
+<span class="fu"><a href="https://easystats.github.io/performance/reference/check_model.html">check_model</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-129-1.png" width="672"></div>
+<p>計算各統計量並儲存。</p>
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mtcars</span><span class="op">$</span><span class="va">residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>  
+<span class="va">mtcars</span><span class="op">$</span><span class="va">standardized.residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">rstandard</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">studentized.residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">rstudent</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">cooks.distance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">cooks.distance</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">leverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hatvalues</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>
+<span class="va">mtcars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">dfbetas</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span><span class="op">[</span><span class="fl">12</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'db_intercept'</span>, <span class="st">'db_wt'</span>, <span class="st">'db_hp'</span>, <span class="st">'db_disp'</span><span class="op">)</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">dffit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">dffits</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div id="逐步迴歸" class="section level2" number="7.4">
+<h2>
+<span class="header-section-number">7.4</span> 逐步迴歸<a class="anchor" aria-label="anchor" href="#%E9%80%90%E6%AD%A5%E8%BF%B4%E6%AD%B8"><i class="fas fa-link"></i></a>
+</h2>
+<div id="前向法" class="section level3" number="7.4.1">
+<h3>
+<span class="header-section-number">7.4.1</span> 前向法<a class="anchor" aria-label="anchor" href="#%E5%89%8D%E5%90%91%E6%B3%95"><i class="fas fa-link"></i></a>
+</h3>
+<p>用lm()做逐步回歸。以下為前向法。</p>
+<div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mtcars2</span> <span class="op">&lt;-</span> <span class="va">mtcars</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">6</span>,<span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>
+<span class="va">nullM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">mtcars2</span><span class="op">)</span>
+<span class="va">fullM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars2</span><span class="op">)</span>
+<span class="va">forM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/step.html">step</a></span><span class="op">(</span><span class="va">nullM</span>, scope<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower<span class="op">=</span><span class="va">nullM</span>, upper<span class="op">=</span><span class="va">fullM</span><span class="op">)</span>, direction<span class="op">=</span><span class="st">"forward"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Start:  AIC=115.94
+## mpg ~ 1
+## 
+##        Df Sum of Sq     RSS     AIC
+## + wt    1    847.73  278.32  73.217
+## + disp  1    808.89  317.16  77.397
+## + hp    1    678.37  447.67  88.427
+## &lt;none&gt;              1126.05 115.943
+## 
+## Step:  AIC=73.22
+## mpg ~ wt
+## 
+##        Df Sum of Sq    RSS    AIC
+## + hp    1    83.274 195.05 63.840
+## + disp  1    31.639 246.68 71.356
+## &lt;none&gt;              278.32 73.217
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## + disp  1   0.05708 194.99 65.831</code></pre>
+<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">forM</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars2)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+</div>
+<div id="後向法" class="section level3" number="7.4.2">
+<h3>
+<span class="header-section-number">7.4.2</span> 後向法<a class="anchor" aria-label="anchor" href="#%E5%BE%8C%E5%90%91%E6%B3%95"><i class="fas fa-link"></i></a>
+</h3>
+<p>backward method。</p>
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fullM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars2</span><span class="op">)</span>
+<span class="co"># backM &lt;- step(fullM, scope=list(upper=fullM), direction='backward') # 完整寫法</span>
+<span class="va">backM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/step.html">step</a></span><span class="op">(</span><span class="va">fullM</span>, direction<span class="op">=</span><span class="st">'backward'</span><span class="op">)</span> </code></pre></div>
+<pre><code>## Start:  AIC=65.83
+## mpg ~ wt + hp + disp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - disp  1     0.057 195.05 63.840
+## &lt;none&gt;              194.99 65.831
+## - hp    1    51.692 246.68 71.356
+## - wt    1    88.503 283.49 75.806
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## - hp    1    83.274 278.32 73.217
+## - wt    1   252.627 447.67 88.427</code></pre>
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">backM</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars2)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+</div>
+<div id="逐步法" class="section level3" number="7.4.3">
+<h3>
+<span class="header-section-number">7.4.3</span> 逐步法<a class="anchor" aria-label="anchor" href="#%E9%80%90%E6%AD%A5%E6%B3%95"><i class="fas fa-link"></i></a>
+</h3>
+<p>Stepwise method。</p>
+<div id="從full-model開始" class="section level4" number="7.4.3.1">
+<h4>
+<span class="header-section-number">7.4.3.1</span> 從full model開始<a class="anchor" aria-label="anchor" href="#%E5%BE%9Efull-model%E9%96%8B%E5%A7%8B"><i class="fas fa-link"></i></a>
+</h4>
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fullM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars2</span><span class="op">)</span>
+<span class="co"># stepM1 &lt;- step(fullM, scope = list(upper=fullM), direction="both") # 完整寫法</span>
+<span class="va">stepM1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/step.html">step</a></span><span class="op">(</span><span class="va">fullM</span>, direction<span class="op">=</span><span class="st">"both"</span><span class="op">)</span> </code></pre></div>
+<pre><code>## Start:  AIC=65.83
+## mpg ~ wt + hp + disp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - disp  1     0.057 195.05 63.840
+## &lt;none&gt;              194.99 65.831
+## - hp    1    51.692 246.68 71.356
+## - wt    1    88.503 283.49 75.806
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## + disp  1     0.057 194.99 65.831
+## - hp    1    83.274 278.32 73.217
+## - wt    1   252.627 447.67 88.427</code></pre>
+</div>
+<div id="從null-model開始" class="section level4" number="7.4.3.2">
+<h4>
+<span class="header-section-number">7.4.3.2</span> 從null model開始<a class="anchor" aria-label="anchor" href="#%E5%BE%9Enull-model%E9%96%8B%E5%A7%8B"><i class="fas fa-link"></i></a>
+</h4>
+<p>結果可能會與從full model開始不同。</p>
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">nullM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">mtcars2</span><span class="op">)</span>
+<span class="va">stepM2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/step.html">step</a></span><span class="op">(</span><span class="va">nullM</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>upper<span class="op">=</span><span class="va">fullM</span><span class="op">)</span>, direction<span class="op">=</span><span class="st">"both"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Start:  AIC=115.94
+## mpg ~ 1
+## 
+##        Df Sum of Sq     RSS     AIC
+## + wt    1    847.73  278.32  73.217
+## + disp  1    808.89  317.16  77.397
+## + hp    1    678.37  447.67  88.427
+## &lt;none&gt;              1126.05 115.943
+## 
+## Step:  AIC=73.22
+## mpg ~ wt
+## 
+##        Df Sum of Sq     RSS     AIC
+## + hp    1     83.27  195.05  63.840
+## + disp  1     31.64  246.68  71.356
+## &lt;none&gt;               278.32  73.217
+## - wt    1    847.73 1126.05 115.943
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## + disp  1     0.057 194.99 65.831
+## - hp    1    83.274 278.32 73.217
+## - wt    1   252.627 447.67 88.427</code></pre>
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">stepM1</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars2)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">stepM2</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars2)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+</div>
+<div id="另一種作法" class="section level4" number="7.4.3.3">
+<h4>
+<span class="header-section-number">7.4.3.3</span> 另一種作法<a class="anchor" aria-label="anchor" href="#%E5%8F%A6%E4%B8%80%E7%A8%AE%E4%BD%9C%E6%B3%95"><i class="fas fa-link"></i></a>
+</h4>
+<p>可用stepAIC()來做逐步回歸。沒指定scope時會用backward；指定scope時會用both。可用direction來指定forward、backward或both。</p>
+<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">model.mpg.whd</span><span class="op">)</span><span class="op">)</span> <span class="co">#沒指定scope時會用backward</span></code></pre></div>
+<pre><code>## Start:  AIC=65.83
+## mpg ~ wt + hp + disp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - disp  1     0.057 195.05 63.840
+## &lt;none&gt;              194.99 65.831
+## - hp    1    51.692 246.68 71.356
+## - wt    1    88.503 283.49 75.806
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## - hp    1    83.274 278.32 73.217
+## - wt    1   252.627 447.67 88.427</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+<div class="sourceCode" id="cb257"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">model.mpg.whd</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>upper <span class="op">=</span> <span class="op">~</span><span class="va">wt</span><span class="op">+</span><span class="va">hp</span><span class="op">+</span><span class="va">disp</span>, lower <span class="op">=</span> <span class="op">~</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co">#指定scope時會用both</span></code></pre></div>
+<pre><code>## Start:  AIC=65.83
+## mpg ~ wt + hp + disp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - disp  1     0.057 195.05 63.840
+## &lt;none&gt;              194.99 65.831
+## - hp    1    51.692 246.68 71.356
+## - wt    1    88.503 283.49 75.806
+## 
+## Step:  AIC=63.84
+## mpg ~ wt + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              195.05 63.840
+## + disp  1     0.057 194.99 65.831
+## - hp    1    83.274 278.32 73.217
+## - wt    1   252.627 447.67 88.427</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ wt + hp, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.941 -1.600 -0.182  1.050  5.854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 37.22727    1.59879  23.285  &lt; 2e-16 ***
+## wt          -3.87783    0.63273  -6.129 1.12e-06 ***
+## hp          -0.03177    0.00903  -3.519  0.00145 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.593 on 29 degrees of freedom
+## Multiple R-squared:  0.8268, Adjusted R-squared:  0.8148 
+## F-statistic: 69.21 on 2 and 29 DF,  p-value: 9.109e-12</code></pre>
+</div>
+</div>
+</div>
+<div id="類別變項的迴歸" class="section level2" number="7.5">
+<h2>
+<span class="header-section-number">7.5</span> 類別變項的迴歸<a class="anchor" aria-label="anchor" href="#%E9%A1%9E%E5%88%A5%E8%AE%8A%E9%A0%85%E7%9A%84%E8%BF%B4%E6%AD%B8"><i class="fas fa-link"></i></a>
+</h2>
+<p>若只有兩個levels，可直接做迴歸。若有多個levels，可以dummy coding的方式來做。</p>
+<div class="sourceCode" id="cb260"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mtcars</span><span class="op">$</span><span class="va">cyl</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/contrasts.html">contrasts</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/stats/contrast.html">contr.treatment</a></span><span class="op">(</span><span class="fl">3</span>, base <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co">#generate contrasts</span>
+<span class="va">mtcars</span><span class="op">$</span><span class="va">cyl</span></code></pre></div>
+<pre><code>##  [1] 6 6 4 6 8 6 8 4 4 6 6 8 8 8 8 8 8 4 4 4 4 8 8 8 8 4 4 4 8 6 8 4
+## attr(,"contrasts")
+##   2 3
+## 4 0 0
+## 6 1 0
+## 8 0 1
+## Levels: 4 6 8</code></pre>
+<div class="sourceCode" id="cb262"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model.mpg.cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.mpg.cyl</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.2636 -1.8357  0.0286  1.3893  7.2364 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  26.6636     0.9718  27.437  &lt; 2e-16 ***
+## cyl2         -6.9208     1.5583  -4.441 0.000119 ***
+## cyl3        -11.5636     1.2986  -8.905 8.57e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.223 on 29 degrees of freedom
+## Multiple R-squared:  0.7325, Adjusted R-squared:  0.714 
+## F-statistic:  39.7 on 2 and 29 DF,  p-value: 4.979e-09</code></pre>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></div>
+<div class="next"><a href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#multireg"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li>
+<a class="nav-link" href="#%E8%B3%87%E6%96%99%E7%9A%84%E6%BA%96%E5%82%99%E8%88%87%E6%AA%A2%E8%A6%96"><span class="header-section-number">7.1</span> 資料的準備與檢視</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-6"><span class="header-section-number">7.1.1</span> 讀入檔案</a></li>
+<li><a class="nav-link" href="#%E6%AA%A2%E8%A6%96%E7%9B%B8%E9%97%9C"><span class="header-section-number">7.1.2</span> 檢視相關</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E8%BF%B4%E6%AD%B8%E5%88%86%E6%9E%90"><span class="header-section-number">7.2</span> 迴歸分析</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E7%B0%A1%E5%96%AE%E8%BF%B4%E6%AD%B8"><span class="header-section-number">7.2.1</span> 簡單迴歸</a></li>
+<li><a class="nav-link" href="#%E5%A4%9A%E5%85%83%E8%BF%B4%E6%AD%B8"><span class="header-section-number">7.2.2</span> 多元迴歸</a></li>
+<li><a class="nav-link" href="#%E8%BF%B4%E6%AD%B8%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%AF%94%E8%BC%83"><span class="header-section-number">7.2.3</span> 迴歸模型的比較</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E8%BF%B4%E6%AD%B8%E5%81%87%E8%A8%AD%E7%9A%84%E6%AA%A2%E9%A9%97"><span class="header-section-number">7.3</span> 迴歸假設的檢驗</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E6%A5%B5%E7%AB%AF%E6%95%B8%E5%80%BC%E7%9A%84%E5%BD%B1%E9%9F%BF"><span class="header-section-number">7.3.1</span> 極端數值的影響</a></li>
+<li><a class="nav-link" href="#homoscedasticity%E8%A8%BA%E6%96%B7"><span class="header-section-number">7.3.2</span> Homoscedasticity診斷</a></li>
+<li><a class="nav-link" href="#%E5%85%B1%E7%B7%9A%E6%80%A7multicollinearity%E7%9A%84%E6%AA%A2%E9%A9%97"><span class="header-section-number">7.3.3</span> 共線性multicollinearity的檢驗</a></li>
+<li><a class="nav-link" href="#%E8%AA%A4%E5%B7%AE%E5%B8%B8%E6%85%8B%E7%9A%84%E6%AA%A2%E5%AE%9A"><span class="header-section-number">7.3.4</span> 誤差常態的檢定</a></li>
+<li><a class="nav-link" href="#%E8%87%AA%E7%9B%B8%E9%97%9C%E6%AA%A2%E9%A9%97"><span class="header-section-number">7.3.5</span> 自相關檢驗</a></li>
+<li><a class="nav-link" href="#%E7%B6%9C%E5%90%88%E6%AA%A2%E9%A9%97"><span class="header-section-number">7.3.6</span> 綜合檢驗</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E9%80%90%E6%AD%A5%E8%BF%B4%E6%AD%B8"><span class="header-section-number">7.4</span> 逐步迴歸</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E5%89%8D%E5%90%91%E6%B3%95"><span class="header-section-number">7.4.1</span> 前向法</a></li>
+<li><a class="nav-link" href="#%E5%BE%8C%E5%90%91%E6%B3%95"><span class="header-section-number">7.4.2</span> 後向法</a></li>
+<li><a class="nav-link" href="#%E9%80%90%E6%AD%A5%E6%B3%95"><span class="header-section-number">7.4.3</span> 逐步法</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E9%A1%9E%E5%88%A5%E8%AE%8A%E9%A0%85%E7%9A%84%E8%BF%B4%E6%AD%B8"><span class="header-section-number">7.5</span> 類別變項的迴歸</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

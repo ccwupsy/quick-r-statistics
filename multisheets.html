@@ -1,0 +1,3268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 10 多個EXCEL檔的資料匯整與分析 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 10 多個EXCEL檔的資料匯整與分析 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 10 多個EXCEL檔的資料匯整與分析 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content="以R整理多個excel檔的資料並加以統計 - 以學生學習成效資料為例。  10.1 學習成效分析 下載學習成效原始資料，並統計2017~2020年所有課程的學習成效。 先將所有檔案放到工作目錄下的一個資料夾(例如TableDemo資料夾)內，並在R中設定好工作目錄。(你也可以將此資料夾設為工作目錄，這邊因為Rmarkdown的關係，所以這樣設定。)...">
+<meta property="og:description" content="以R整理多個excel檔的資料並加以統計 - 以學生學習成效資料為例。  10.1 學習成效分析 下載學習成效原始資料，並統計2017~2020年所有課程的學習成效。 先將所有檔案放到工作目錄下的一個資料夾(例如TableDemo資料夾)內，並在R中設定好工作目錄。(你也可以將此資料夾設為工作目錄，這邊因為Rmarkdown的關係，所以這樣設定。)...">
+<meta name="twitter:description" content="以R整理多個excel檔的資料並加以統計 - 以學生學習成效資料為例。  10.1 學習成效分析 下載學習成效原始資料，並統計2017~2020年所有課程的學習成效。 先將所有檔案放到工作目錄下的一個資料夾(例如TableDemo資料夾)內，並在R中設定好工作目錄。(你也可以將此資料夾設為工作目錄，這邊因為Rmarkdown的關係，所以這樣設定。)...">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="active" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="multisheets" class="section level1" number="10">
+<h1>
+<span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析<a class="anchor" aria-label="anchor" href="#multisheets"><i class="fas fa-link"></i></a>
+</h1>
+<p>以R整理多個excel檔的資料並加以統計 - 以學生學習成效資料為例。</p>
+<div id="學習成效分析" class="section level2" number="10.1">
+<h2>
+<span class="header-section-number">10.1</span> 學習成效分析<a class="anchor" aria-label="anchor" href="#%E5%AD%B8%E7%BF%92%E6%88%90%E6%95%88%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<p>下載<a href="https://drive.google.com/drive/u/0/folders/1-eNELkxrsLIdgfEX4S3nZIvmhnC00fEt">學習成效原始資料</a>，並統計2017~2020年所有課程的學習成效。</p>
+<p>先將所有檔案放到工作目錄下的一個資料夾(例如TableDemo資料夾)內，並在R中設定好工作目錄。(你也可以將此資料夾設為工作目錄，這邊因為Rmarkdown的關係，所以這樣設定。)</p>
+<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"D:\\Dropbox\\Working\\教師社群"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="讀入單一工作表並抽取所需資料" class="section level2" number="10.2">
+<h2>
+<span class="header-section-number">10.2</span> 讀入單一工作表並抽取所需資料<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E5%96%AE%E4%B8%80%E5%B7%A5%E4%BD%9C%E8%A1%A8%E4%B8%A6%E6%8A%BD%E5%8F%96%E6%89%80%E9%9C%80%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h2>
+<p>先讀入單一工作表，並抽取學習成效的資料。</p>
+<p>以readxl套件，讀取UG-2017.xlsx的sheet 1。因為表格中沒有column name，readxl會出現警告訊息，不想看到的話可以加上suppressMessages()。</p>
+<div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="va">qData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"TableDemo\\UG-2017.xlsx"</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>以which()找出「三、學習成效評估」的位置，為「學習成效評估表」的起始位置；並以整個表格長度做為「學習成效評估表」的終點位置。</p>
+<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">index_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">==</span><span class="st">"三、學習成效評估"</span><span class="op">)</span>
+<span class="va">index_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span></code></pre></div>
+<p>抓出「學習成效評估表」的所有數值。</p>
+<div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="va">myData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">qData</span>,<span class="va">index_start</span><span class="op">:</span><span class="va">index_end</span><span class="op">)</span>  
+<span class="co"># myData &lt;- qData[index_start:index_end,]  #相當於這樣寫 </span>
+<span class="va">myData</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+一、教學意見量化結果
+</th>
+<th style="text-align:left;">
+…2
+</th>
+<th style="text-align:left;">
+…3
+</th>
+<th style="text-align:left;">
+…4
+</th>
+<th style="text-align:left;">
+…5
+</th>
+<th style="text-align:left;">
+…6
+</th>
+<th style="text-align:left;">
+…7
+</th>
+<th style="text-align:left;">
+…8
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+三、學習成效評估
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+57.00%
+</td>
+<td style="text-align:left;">
+43.00%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+57.00%
+</td>
+<td style="text-align:left;">
+33.00%
+</td>
+<td style="text-align:left;">
+10.00%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+57.00%
+</td>
+<td style="text-align:left;">
+24.00%
+</td>
+<td style="text-align:left;">
+19.00%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+57.00%
+</td>
+<td style="text-align:left;">
+24.00%
+</td>
+<td style="text-align:left;">
+19.00%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+57.00%
+</td>
+<td style="text-align:left;">
+38.00%
+</td>
+<td style="text-align:left;">
+5.00%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+0%
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+本課程學習成效平均分數
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+4.47
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>刪除NA的列。</p>
+<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">myData</span><span class="op">)</span> <span class="co"># way1</span>
+<span class="co">## data1 &lt;- myData[complete.cases(myData), ] #way2</span>
+<span class="co">## data1 &lt;- myData[complete.cases(myData[ , 1:8]),] #way3: 可刪除部份data</span>
+
+<span class="va">data1</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+一、教學意見量化結果
+</th>
+<th style="text-align:left;">
+…2
+</th>
+<th style="text-align:left;">
+…3
+</th>
+<th style="text-align:left;">
+…4
+</th>
+<th style="text-align:left;">
+…5
+</th>
+<th style="text-align:left;">
+…6
+</th>
+<th style="text-align:left;">
+…7
+</th>
+<th style="text-align:left;">
+…8
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+題目
+</td>
+<td style="text-align:left;">
+答題人數
+</td>
+<td style="text-align:left;">
+(5分)非常符合
+</td>
+<td style="text-align:left;">
+(4分)符合
+</td>
+<td style="text-align:left;">
+(3分)尚可
+</td>
+<td style="text-align:left;">
+(2分)不符合
+</td>
+<td style="text-align:left;">
+(1分)非常不符合
+</td>
+<td style="text-align:left;">
+單題指標
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+4.52
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>刪掉每個題目表格的title列。</p>
+<div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">data1</span>, <span class="va">`一、教學意見量化結果`</span><span class="op">!=</span><span class="st">"題目"</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span>
+<span class="va">data2</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+一、教學意見量化結果
+</th>
+<th style="text-align:left;">
+…2
+</th>
+<th style="text-align:left;">
+…8
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.52
+</td>
+</tr>
+</tbody>
+</table></div>
+<div id="簡化程式" class="section level3" number="10.2.1">
+<h3>
+<span class="header-section-number">10.2.1</span> 簡化程式<a class="anchor" aria-label="anchor" href="#%E7%B0%A1%E5%8C%96%E7%A8%8B%E5%BC%8F"><i class="fas fa-link"></i></a>
+</h3>
+<p>以%&gt;%來簡化程式，讓程式更具可讀性，也不需在中間過程多存出變項。意即，只要將qData放入後，即可產生tb1 (即上述data2)。</p>
+<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tb1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">qData</span>,<span class="va">index_start</span><span class="op">:</span><span class="va">index_end</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">`一、教學意見量化結果`</span><span class="op">!=</span><span class="st">"題目"</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="寫成函數" class="section level3" number="10.2.2">
+<h3>
+<span class="header-section-number">10.2.2</span> 寫成函數<a class="anchor" aria-label="anchor" href="#%E5%AF%AB%E6%88%90%E5%87%BD%E6%95%B8"><i class="fas fa-link"></i></a>
+</h3>
+<p>將上述步驟寫成函數anal_Teach_Q，只要給予filename和nSheet即可傳回tb1。</p>
+<div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+
+<span class="va">anal_Teach_Q</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="va">qData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">index_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">==</span><span class="st">"三、學習成效評估"</span><span class="op">)</span>
+  <span class="va">index_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>
+  <span class="va">tb1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">qData</span>,<span class="va">index_start</span><span class="op">:</span><span class="va">index_end</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">`一、教學意見量化結果`</span><span class="op">!=</span><span class="st">"題目"</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">tb1</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>呼叫anal_Teach_Q，分析「UG-2017.xlsx」的sheet1。</p>
+<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="st">"TableDemo\\UG-2017.xlsx"</span>
+<span class="va">nSheet</span> <span class="op">&lt;-</span> <span class="fl">1</span>
+<span class="va">tb1</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="va">nSheet</span><span class="op">)</span>
+<span class="va">tb1</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+一、教學意見量化結果
+</th>
+<th style="text-align:left;">
+…2
+</th>
+<th style="text-align:left;">
+…8
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.52
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div id="讀取一個檔案的多個工作表" class="section level2" number="10.3">
+<h2>
+<span class="header-section-number">10.3</span> 讀取一個檔案的多個工作表<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%8F%96%E4%B8%80%E5%80%8B%E6%AA%94%E6%A1%88%E7%9A%84%E5%A4%9A%E5%80%8B%E5%B7%A5%E4%BD%9C%E8%A1%A8"><i class="fas fa-link"></i></a>
+</h2>
+<p>當有很多個工作表需讀入時，你可以這樣寫：</p>
+<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="st">"TableDemo\\UG-2017.xlsx"</span>
+<span class="va">tb1</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="fl">1</span><span class="op">)</span>
+<span class="va">tb2</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="fl">2</span><span class="op">)</span>
+<span class="va">tb3</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<p>更有效率的做法是用for迴圈。</p>
+<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tblist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">tb0</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="va">i</span><span class="op">)</span>  
+  <span class="va">tblist</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tb0</span>
+<span class="op">}</span>
+<span class="co"># tblist</span></code></pre></div>
+<p>若要將所有表單放在一起，可以這樣寫。</p>
+<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">tb0</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="va">i</span><span class="op">)</span>  
+  <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">tbs</span>, <span class="va">tb0</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">tbs</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+一、教學意見量化結果
+</th>
+<th style="text-align:left;">
+…2
+</th>
+<th style="text-align:left;">
+…8
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:left;">
+4.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+41
+</td>
+<td style="text-align:left;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.64
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.62
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.62
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+4.62
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.63
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:left;">
+4.71
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:left;">
+4.67
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.63
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.63
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+4.56
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>統計同項目的平均值和個數。由於tbs的項目不是數字，故須先轉為數字。</p>
+<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+<span class="va">tbs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span>
+<span class="va">tbs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span>
+<span class="va">tbs1</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+Group.1
+</th>
+<th style="text-align:right;">
+x
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:right;">
+4.563333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:right;">
+4.380000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:right;">
+4.545000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:right;">
+4.620000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:right;">
+4.690000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:right;">
+4.603333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:right;">
+4.630000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:right;">
+4.630000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:right;">
+4.565000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:right;">
+4.710000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:right;">
+4.475000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:right;">
+4.556667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:right;">
+4.685000
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>將表格整理成dataframe。</p>
+<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"item"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">Group.1</span>, <span class="st">"n"</span> <span class="op">=</span> <span class="va">tbs2</span><span class="op">$</span><span class="va">x</span>, <span class="st">"mean"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+<span class="va">tb</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+item
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.563333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.380000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.545000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.620000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.690000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.603333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.630000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.630000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.565000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.560000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.710000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.475000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.556667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.685000
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="以for迴圈讀入檔案中的所有工作表" class="section level2" number="10.4">
+<h2>
+<span class="header-section-number">10.4</span> 以for迴圈讀入檔案中的所有工作表<a class="anchor" aria-label="anchor" href="#%E4%BB%A5for%E8%BF%B4%E5%9C%88%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E5%B7%A5%E4%BD%9C%E8%A1%A8"><i class="fas fa-link"></i></a>
+</h2>
+<p>以readxl套件中的excel_sheets來列出所有的工作表名稱，並用length()來自動計數有幾個工作表。</p>
+<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="st">"TableDemo\\UG-2017.xlsx"</span>
+<span class="va">sheetname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">thisfilename</span><span class="op">)</span>
+
+<span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sheetname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">tb0</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span>, <span class="va">j</span><span class="op">)</span>
+  <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">tbs</span>, <span class="va">tb0</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+<span class="va">tbs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span>
+<span class="va">tbs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span> 
+<span class="va">tbave</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"item"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">Group.1</span>, <span class="st">"n"</span> <span class="op">=</span> <span class="va">tbs2</span><span class="op">$</span><span class="va">x</span>, <span class="st">"mean"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+<span class="va">tbave</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+item
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+4.578333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10.能提升人文素養
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.370000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11.能提升文學欣賞或審美能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.215000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.455000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13.能了解專業倫理
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.480000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.433750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.464286
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.567500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17.能提升邏輯推理的能力
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.486667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.567500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.437500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+4.628667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20.能提升創作能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.130000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+21.能對觀點或現象進行鑑賞與評論
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.240000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22.能增進個人外語語文能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.155000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+23.能強化學習外語的動力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.780000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+24.能開拓個人或國際觀視野
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.870000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+25.能提升多元文化的理解
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.820000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.435000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4.506000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+28.能增進規劃組織或經營能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.397500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+29.能提升跨領域整合能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.360000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+4.631818
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30.能提升自我管理能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.475000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.270000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.552500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.525714
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6.能增進本科目（領域）的實驗知能
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.415000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.553750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4.557000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9.能提升數位科技的應用能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.120000
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>將上述寫成function。給定一檔案名稱，即可輸出平均表格。</p>
+<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ave_Teach_Q</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">filename</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">sheetname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">filename</span><span class="op">)</span>
+  <span class="va">tbs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">nSheet</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sheetname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tb0</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span>
+    <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">tbs</span>, <span class="va">tb0</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+  <span class="va">tbs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span> <span class="co">#FUN=mean</span>
+  <span class="va">tbs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span> <span class="co">#FUN=length</span>
+  <span class="va">tbave</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"item"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">Group.1</span>, <span class="st">"n"</span> <span class="op">=</span> <span class="va">tbs2</span><span class="op">$</span><span class="va">x</span>, <span class="st">"mean"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">tbave</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>呼叫ave_Teach_Q函數。</p>
+<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="st">"TableDemo\\UG-2017.xlsx"</span>
+<span class="va">tbave</span> <span class="op">&lt;-</span> <span class="fu">ave_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span><span class="op">)</span>
+<span class="va">tbave</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+item
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+4.578333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10.能提升人文素養
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.370000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11.能提升文學欣賞或審美能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.215000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.455000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13.能了解專業倫理
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.480000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.433750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.464286
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.567500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17.能提升邏輯推理的能力
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4.486667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.567500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.437500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+4.628667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20.能提升創作能力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.130000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+21.能對觀點或現象進行鑑賞與評論
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.240000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22.能增進個人外語語文能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.155000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+23.能強化學習外語的動力
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.780000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+24.能開拓個人或國際觀視野
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.870000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+25.能提升多元文化的理解
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.820000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.435000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4.506000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+28.能增進規劃組織或經營能力
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.397500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+29.能提升跨領域整合能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.360000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+4.631818
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30.能提升自我管理能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.475000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.270000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.552500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4.525714
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6.能增進本科目（領域）的實驗知能
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4.415000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+4.553750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+4.557000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9.能提升數位科技的應用能力
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4.120000
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="讀入多個檔案" class="section level2" number="10.5">
+<h2>
+<span class="header-section-number">10.5</span> 讀入多個檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E5%A4%9A%E5%80%8B%E6%AA%94%E6%A1%88"><i class="fas fa-link"></i></a>
+</h2>
+<p>同理，可以用for迴圈一次讀入多個檔案。</p>
+<p>此時需要知道每個檔案的名稱，可以用list.files()來列出所有檔案名稱。</p>
+<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"D:\\Dropbox\\Working\\教師社群\\TableDemo"</span>
+<span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, pattern <span class="op">=</span> <span class="st">"*.xlsx"</span><span class="op">)</span>
+<span class="co"># files</span></code></pre></div>
+<p>讀入所有檔案並列表。</p>
+<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tblist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"TableDemo\\"</span>, <span class="va">files</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>
+  <span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu">ave_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span><span class="op">)</span>
+  <span class="va">tblist</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tb</span>
+<span class="op">}</span>
+
+<span class="co"># tblist</span></code></pre></div>
+<p>僅抓取平均數，並將每個表的mean改為該學期。以利後續處理。</p>
+<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"D:\\Dropbox\\Working\\教師社群\\TableDemo"</span>
+<span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, pattern <span class="op">=</span> <span class="st">"*.xlsx"</span><span class="op">)</span>
+
+<span class="va">tblist</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"TableDemo\\"</span>, <span class="va">files</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, sep<span class="op">=</span><span class="st">''</span><span class="op">)</span>
+  <span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu">ave_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span><span class="op">)</span>
+  <span class="va">tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">tb</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">tb2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'item'</span>, <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">thisfilename</span>,<span class="fl">4</span>,<span class="fl">7</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">tblist</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tb2</span>
+<span class="op">}</span>
+
+<span class="co"># tblist</span></code></pre></div>
+<p>將所有抓取的表合成一個大表。</p>
+<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tbAll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, all<span class="op">=</span><span class="cn">TRUE</span>, by<span class="op">=</span><span class="st">"item"</span><span class="op">)</span>, <span class="va">tblist</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning in merge.data.frame(x, y, all = TRUE, by = "item"): column names
+## 'leDe.x', 'leDe.y' are duplicated in the result</code></pre>
+<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tbAll</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">tbAll</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">tbAll</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">tbAll</span><span class="op">)</span><span class="op">]</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">tbAll</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+item
+</th>
+<th style="text-align:right;">
+leDe.x
+</th>
+<th style="text-align:right;">
+leDe.y
+</th>
+<th style="text-align:right;">
+leDe.x
+</th>
+<th style="text-align:right;">
+leDe.y
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1.能獲得本科目（領域）之知識
+</td>
+<td style="text-align:right;">
+4.58
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+<td style="text-align:right;">
+4.63
+</td>
+<td style="text-align:right;">
+4.73
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10.能提升人文素養
+</td>
+<td style="text-align:right;">
+4.37
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.80
+</td>
+<td style="text-align:right;">
+4.58
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11.能提升文學欣賞或審美能力
+</td>
+<td style="text-align:right;">
+4.22
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.71
+</td>
+<td style="text-align:right;">
+4.17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12.能促進個人品德實踐或社會關懷情操
+</td>
+<td style="text-align:right;">
+4.46
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+4.30
+</td>
+<td style="text-align:right;">
+4.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13.能了解專業倫理
+</td>
+<td style="text-align:right;">
+4.48
+</td>
+<td style="text-align:right;">
+4.60
+</td>
+<td style="text-align:right;">
+4.04
+</td>
+<td style="text-align:right;">
+4.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14.能提升問題解決能力
+</td>
+<td style="text-align:right;">
+4.43
+</td>
+<td style="text-align:right;">
+4.54
+</td>
+<td style="text-align:right;">
+4.50
+</td>
+<td style="text-align:right;">
+4.70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15.能提升資料蒐集分析與運用能力
+</td>
+<td style="text-align:right;">
+4.46
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+<td style="text-align:right;">
+4.52
+</td>
+<td style="text-align:right;">
+4.73
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16.能提升探究的能力
+</td>
+<td style="text-align:right;">
+4.57
+</td>
+<td style="text-align:right;">
+4.54
+</td>
+<td style="text-align:right;">
+4.53
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17.能提升邏輯推理的能力
+</td>
+<td style="text-align:right;">
+4.49
+</td>
+<td style="text-align:right;">
+4.60
+</td>
+<td style="text-align:right;">
+4.38
+</td>
+<td style="text-align:right;">
+4.66
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18.能激發主動思考及判斷
+</td>
+<td style="text-align:right;">
+4.57
+</td>
+<td style="text-align:right;">
+4.68
+</td>
+<td style="text-align:right;">
+4.66
+</td>
+<td style="text-align:right;">
+4.74
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19.能激發創新創意思考
+</td>
+<td style="text-align:right;">
+4.44
+</td>
+<td style="text-align:right;">
+4.66
+</td>
+<td style="text-align:right;">
+4.48
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2.能獲得本科目（領域）之重要概念
+</td>
+<td style="text-align:right;">
+4.63
+</td>
+<td style="text-align:right;">
+4.73
+</td>
+<td style="text-align:right;">
+4.62
+</td>
+<td style="text-align:right;">
+4.74
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20.能提升創作能力
+</td>
+<td style="text-align:right;">
+4.13
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+<td style="text-align:right;">
+3.82
+</td>
+<td style="text-align:right;">
+4.54
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+21.能對觀點或現象進行鑑賞與評論
+</td>
+<td style="text-align:right;">
+4.24
+</td>
+<td style="text-align:right;">
+4.60
+</td>
+<td style="text-align:right;">
+4.52
+</td>
+<td style="text-align:right;">
+4.70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22.能增進個人外語語文能力
+</td>
+<td style="text-align:right;">
+4.15
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+4.26
+</td>
+<td style="text-align:right;">
+4.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+23.能強化學習外語的動力
+</td>
+<td style="text-align:right;">
+3.78
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.53
+</td>
+<td style="text-align:right;">
+4.38
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+24.能開拓個人或國際觀視野
+</td>
+<td style="text-align:right;">
+3.87
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.60
+</td>
+<td style="text-align:right;">
+4.39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+25.能提升多元文化的理解
+</td>
+<td style="text-align:right;">
+3.82
+</td>
+<td style="text-align:right;">
+4.58
+</td>
+<td style="text-align:right;">
+4.24
+</td>
+<td style="text-align:right;">
+4.69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+26.能增進口語或書面表達能力
+</td>
+<td style="text-align:right;">
+4.44
+</td>
+<td style="text-align:right;">
+4.58
+</td>
+<td style="text-align:right;">
+4.57
+</td>
+<td style="text-align:right;">
+4.64
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27.能增進人際溝通與合作能力
+</td>
+<td style="text-align:right;">
+4.51
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+<td style="text-align:right;">
+4.29
+</td>
+<td style="text-align:right;">
+4.54
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+28.能增進規劃組織或經營能力
+</td>
+<td style="text-align:right;">
+4.40
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+4.34
+</td>
+<td style="text-align:right;">
+4.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+29.能提升跨領域整合能力
+</td>
+<td style="text-align:right;">
+4.36
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+4.31
+</td>
+<td style="text-align:right;">
+4.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3.能獲得本科目（領域）之重要原理原則
+</td>
+<td style="text-align:right;">
+4.63
+</td>
+<td style="text-align:right;">
+4.66
+</td>
+<td style="text-align:right;">
+4.54
+</td>
+<td style="text-align:right;">
+4.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30.能提升自我管理能力
+</td>
+<td style="text-align:right;">
+4.47
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+4.42
+</td>
+<td style="text-align:right;">
+4.66
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31.能提升對未來就業的信心
+</td>
+<td style="text-align:right;">
+4.27
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.64
+</td>
+<td style="text-align:right;">
+4.61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4.能增進對該領域持續學習的興趣
+</td>
+<td style="text-align:right;">
+4.55
+</td>
+<td style="text-align:right;">
+4.58
+</td>
+<td style="text-align:right;">
+4.50
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5.能學到專業領域的重要技術
+</td>
+<td style="text-align:right;">
+4.53
+</td>
+<td style="text-align:right;">
+4.80
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6.能增進本科目（領域）的實驗知能
+</td>
+<td style="text-align:right;">
+4.42
+</td>
+<td style="text-align:right;">
+4.65
+</td>
+<td style="text-align:right;">
+4.45
+</td>
+<td style="text-align:right;">
+4.65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7.能提升實務操作的能力
+</td>
+<td style="text-align:right;">
+4.55
+</td>
+<td style="text-align:right;">
+4.68
+</td>
+<td style="text-align:right;">
+4.43
+</td>
+<td style="text-align:right;">
+4.71
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8.能提升專業知識的應用能力
+</td>
+<td style="text-align:right;">
+4.56
+</td>
+<td style="text-align:right;">
+4.68
+</td>
+<td style="text-align:right;">
+4.57
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9.能提升數位科技的應用能力
+</td>
+<td style="text-align:right;">
+4.12
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+3.62
+</td>
+<td style="text-align:right;">
+4.35
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>也可以用tidyverse package中的purr和dplyr package的full_join()搭配Reduce()來做。</p>
+<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op">)</span>
+<span class="va">tbAll2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/reduce.html">reduce</a></span><span class="op">(</span><span class="va">tblist</span>, <span class="va">full_join</span>, by <span class="op">=</span> <span class="st">"item"</span><span class="op">)</span>
+<span class="co"># tbAll2</span></code></pre></div>
+<p>更進階的寫法：以lapply取代for迴圈。</p>
+<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"D:\\Dropbox\\Working\\教師社群\\TableDemo"</span><span class="op">)</span>
+<span class="va">all.data</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">files</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">]</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+    <span class="fu">ave_Teach_Q</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>, <span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">4</span>,<span class="fl">7</span><span class="op">)</span> <span class="op">:=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">tbAll2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, all<span class="op">=</span><span class="cn">TRUE</span>, by<span class="op">=</span><span class="st">"item"</span><span class="op">)</span>, <span class="va">all.data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html">mutate_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">round</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+                 
+<span class="co"># tbAll2</span></code></pre></div>
+<p>將tbAll存成excel檔。</p>
+<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span>
+<span class="fu"><a href="https://docs.ropensci.org/writexl/reference/write_xlsx.html">write_xlsx</a></span><span class="op">(</span><span class="va">tbAll</span>, <span class="st">"學習成效總表.xlsx"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="集大成的程式碼" class="section level2" number="10.6">
+<h2>
+<span class="header-section-number">10.6</span> 集大成的程式碼<a class="anchor" aria-label="anchor" href="#%E9%9B%86%E5%A4%A7%E6%88%90%E7%9A%84%E7%A8%8B%E5%BC%8F%E7%A2%BC"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"D:\\pCloud\\Working\\教師社群\\TableDemo"</span><span class="op">)</span>
+
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"D:\\pCloud\\Working\\教師社群\\TableDemo"</span>
+<span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, pattern <span class="op">=</span> <span class="st">"*.xlsx"</span><span class="op">)</span>
+
+<span class="va">anal_Teach_Q</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="va">qData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">index_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">==</span><span class="st">"三、學習成效評估"</span><span class="op">)</span>
+  <span class="va">index_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>
+  <span class="va">tb1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">qData</span>,<span class="va">index_start</span><span class="op">:</span><span class="va">index_end</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">`一、教學意見量化結果`</span><span class="op">!=</span><span class="st">"題目"</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">8</span><span class="op">)</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">tb1</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">ave_Teach_Q</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">filename</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">sheetname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">filename</span><span class="op">)</span>
+  <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">nSheet</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sheetname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tb0</span> <span class="op">&lt;-</span> <span class="fu">anal_Teach_Q</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nSheet</span><span class="op">)</span>
+    <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">tbs</span>, <span class="va">tb0</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+  <span class="va">tbs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span> <span class="co">#FUN=mean</span>
+  <span class="va">tbs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span> <span class="co">#FUN=length</span>
+  <span class="va">tbave</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"item"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">Group.1</span>, <span class="st">"n"</span> <span class="op">=</span> <span class="va">tbs2</span><span class="op">$</span><span class="va">x</span>, <span class="st">"mean"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">tbave</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">tblist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="va">files</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>
+  <span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu">ave_Teach_Q</span><span class="op">(</span><span class="va">thisfilename</span><span class="op">)</span>
+  <span class="va">tb2</span> <span class="op">&lt;-</span> <span class="va">tb</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">tb2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">thisfilename</span>,<span class="fl">4</span>,<span class="fl">7</span><span class="op">)</span>
+  <span class="va">tblist</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tb2</span>
+<span class="op">}</span>
+
+<span class="va">tbAll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, all<span class="op">=</span><span class="cn">TRUE</span>, by<span class="op">=</span><span class="st">"item"</span><span class="op">)</span>, <span class="va">tblist</span><span class="op">)</span></code></pre></div>
+<p>如果不用任何%&gt;%或funcion，程式會長這樣。</p>
+<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"D:\\pCloud\\Working\\教師社群\\TableDemo"</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"D:\\pCloud\\Working\\教師社群\\TableDemo"</span>
+
+<span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, pattern <span class="op">=</span> <span class="st">"*.xlsx"</span><span class="op">)</span>
+<span class="va">datalist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">thisfilename</span> <span class="op">&lt;-</span> <span class="va">files</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>
+  <span class="va">sheetname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">thisfilename</span><span class="op">)</span>
+  <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sheetname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="va">qData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">thisfilename</span>, <span class="va">j</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">index_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">==</span><span class="st">"三、學習成效評估"</span><span class="op">)</span>
+    <span class="va">index_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">qData</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>
+    <span class="va">myData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">qData</span>,<span class="va">index_start</span><span class="op">:</span><span class="va">index_end</span><span class="op">)</span>
+    <span class="va">myData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">myData</span><span class="op">)</span> 
+    <span class="va">myData2</span> <span class="op">&lt;-</span> <span class="va">myData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">myData1</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">!=</span><span class="st">"題目"</span><span class="op">)</span>,<span class="op">]</span>
+    <span class="va">myData2</span> <span class="op">&lt;-</span> <span class="va">myData2</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">8</span><span class="op">)</span><span class="op">]</span>
+    <span class="va">tbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">tbs</span>, <span class="va">myData2</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+  <span class="va">tbs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span>
+  <span class="va">tbs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">...8</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tbs</span><span class="op">$</span><span class="va">`一、教學意見量化結果`</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span>
+  <span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"item"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">Group.1</span>, <span class="st">"n"</span> <span class="op">=</span> <span class="va">tbs2</span><span class="op">$</span><span class="va">x</span>, <span class="st">"mean"</span> <span class="op">=</span> <span class="va">tbs1</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+  <span class="va">tb2</span> <span class="op">&lt;-</span> <span class="va">tb</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">]</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">tb2</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">thisfilename</span>,<span class="fl">4</span>,<span class="fl">7</span><span class="op">)</span>
+  <span class="va">datalist</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tb2</span>
+<span class="op">}</span>
+
+<span class="va">tbAll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Reduce</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, all<span class="op">=</span><span class="cn">TRUE</span>, by<span class="op">=</span><span class="st">"item"</span><span class="op">)</span>, <span class="va">datalist</span><span class="op">)</span></code></pre></div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></div>
+<div class="next"><a href="references.html"><span class="header-section-number">11</span> 參考資料</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#multisheets"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="nav-link" href="#%E5%AD%B8%E7%BF%92%E6%88%90%E6%95%88%E5%88%86%E6%9E%90"><span class="header-section-number">10.1</span> 學習成效分析</a></li>
+<li>
+<a class="nav-link" href="#%E8%AE%80%E5%85%A5%E5%96%AE%E4%B8%80%E5%B7%A5%E4%BD%9C%E8%A1%A8%E4%B8%A6%E6%8A%BD%E5%8F%96%E6%89%80%E9%9C%80%E8%B3%87%E6%96%99"><span class="header-section-number">10.2</span> 讀入單一工作表並抽取所需資料</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E7%B0%A1%E5%8C%96%E7%A8%8B%E5%BC%8F"><span class="header-section-number">10.2.1</span> 簡化程式</a></li>
+<li><a class="nav-link" href="#%E5%AF%AB%E6%88%90%E5%87%BD%E6%95%B8"><span class="header-section-number">10.2.2</span> 寫成函數</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%8F%96%E4%B8%80%E5%80%8B%E6%AA%94%E6%A1%88%E7%9A%84%E5%A4%9A%E5%80%8B%E5%B7%A5%E4%BD%9C%E8%A1%A8"><span class="header-section-number">10.3</span> 讀取一個檔案的多個工作表</a></li>
+<li><a class="nav-link" href="#%E4%BB%A5for%E8%BF%B4%E5%9C%88%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E5%B7%A5%E4%BD%9C%E8%A1%A8"><span class="header-section-number">10.4</span> 以for迴圈讀入檔案中的所有工作表</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E5%A4%9A%E5%80%8B%E6%AA%94%E6%A1%88"><span class="header-section-number">10.5</span> 讀入多個檔案</a></li>
+<li><a class="nav-link" href="#%E9%9B%86%E5%A4%A7%E6%88%90%E7%9A%84%E7%A8%8B%E5%BC%8F%E7%A2%BC"><span class="header-section-number">10.6</span> 集大成的程式碼</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

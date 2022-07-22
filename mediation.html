@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 9 中介效果分析 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 9 中介效果分析 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 9 中介效果分析 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content="本單元介紹如何以R語言做中介效果分析。  9.1 讀入資料並畫圖檢視 以JASP提供的mediation.csv為例，以R做分析。...">
+<meta property="og:description" content="本單元介紹如何以R語言做中介效果分析。  9.1 讀入資料並畫圖檢視 以JASP提供的mediation.csv為例，以R做分析。...">
+<meta name="twitter:description" content="本單元介紹如何以R語言做中介效果分析。  9.1 讀入資料並畫圖檢視 以JASP提供的mediation.csv為例，以R做分析。...">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="active" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="mediation" class="section level1" number="9">
+<h1>
+<span class="header-section-number">9</span> 中介效果分析<a class="anchor" aria-label="anchor" href="#mediation"><i class="fas fa-link"></i></a>
+</h1>
+<p>本單元介紹如何以R語言做中介效果分析。</p>
+<div id="讀入資料並畫圖檢視-1" class="section level2" number="9.1">
+<h2>
+<span class="header-section-number">9.1</span> 讀入資料並畫圖檢視<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99%E4%B8%A6%E7%95%AB%E5%9C%96%E6%AA%A2%E8%A6%96-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>以JASP提供的<a href="https://jasp-stats.org/wp-content/uploads/2020/03/mediation.csv">mediation.csv</a>為例，以R做分析。</p>
+<p>此資料為一項假設的研究資料。在研究中以量表詢問了父母對孩子的養育採取自由放任態度的程度(laissez_faire)、孩子的獨立程度(independence)、以及孩子的探索行為量(exploration)。研究假設為：強烈的自由放任態度對孩子的獨立性有正向的效果。其可能的機制為，自由放任的態度會影響孩子的探索行為量，進而影響其獨立性。意即，探索是態度對獨立性影響的中介變項。</p>
+<p>以read.table()獨入資料。</p>
+<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"mediation.csv"</span>, header<span class="op">=</span><span class="cn">TRUE</span>, sep<span class="op">=</span><span class="st">","</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:right;">
+laissez_faire
+</th>
+<th style="text-align:right;">
+exploration
+</th>
+<th style="text-align:right;">
+independence
+</th>
+<th style="text-align:right;">
+disobedience
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="以r內建的lm函數來做分析" class="section level2" number="9.2">
+<h2>
+<span class="header-section-number">9.2</span> 以R內建的lm函數來做分析<a class="anchor" aria-label="anchor" href="#%E4%BB%A5r%E5%85%A7%E5%BB%BA%E7%9A%84lm%E5%87%BD%E6%95%B8%E4%BE%86%E5%81%9A%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<div id="總效果檢驗" class="section level3" number="9.2.1">
+<h3>
+<span class="header-section-number">9.2.1</span> 總效果檢驗<a class="anchor" aria-label="anchor" href="#%E7%B8%BD%E6%95%88%E6%9E%9C%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>以laissez_faire預測independence，模型解釋力顯著。</p>
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">independence</span><span class="op">~</span><span class="va">laissez_faire</span>, data<span class="op">=</span><span class="va">mData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = independence ~ laissez_faire, data = mData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.6202 -1.5732 -0.0493  1.4424  6.5051 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    5.21426    0.61960   8.415 3.27e-13 ***
+## laissez_faire  0.23433    0.05151   4.549 1.54e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.363 on 98 degrees of freedom
+## Multiple R-squared:  0.1744, Adjusted R-squared:  0.1659 
+## F-statistic:  20.7 on 1 and 98 DF,  p-value: 1.544e-05</code></pre>
+</div>
+<div id="以預測項來預測中介變項" class="section level3" number="9.2.2">
+<h3>
+<span class="header-section-number">9.2.2</span> 以預測項來預測中介變項<a class="anchor" aria-label="anchor" href="#%E4%BB%A5%E9%A0%90%E6%B8%AC%E9%A0%85%E4%BE%86%E9%A0%90%E6%B8%AC%E4%B8%AD%E4%BB%8B%E8%AE%8A%E9%A0%85"><i class="fas fa-link"></i></a>
+</h3>
+<p>以laissez_faire預測exploration，效果亦顯著。</p>
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fita</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">exploration</span> <span class="op">~</span> <span class="va">laissez_faire</span>, data<span class="op">=</span><span class="va">mData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fita</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = exploration ~ laissez_faire, data = mData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.12610 -0.76207 -0.08926  0.60196  2.56513 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    2.18840    0.27134   8.065 1.84e-12 ***
+## laissez_faire  0.17281    0.02256   7.661 1.33e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.035 on 98 degrees of freedom
+## Multiple R-squared:  0.3746, Adjusted R-squared:  0.3682 
+## F-statistic: 58.69 on 1 and 98 DF,  p-value: 1.333e-11</code></pre>
+</div>
+<div id="中介變項與預測項共同預測依變項" class="section level3" number="9.2.3">
+<h3>
+<span class="header-section-number">9.2.3</span> 中介變項與預測項共同預測依變項<a class="anchor" aria-label="anchor" href="#%E4%B8%AD%E4%BB%8B%E8%AE%8A%E9%A0%85%E8%88%87%E9%A0%90%E6%B8%AC%E9%A0%85%E5%85%B1%E5%90%8C%E9%A0%90%E6%B8%AC%E4%BE%9D%E8%AE%8A%E9%A0%85"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fitb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">independence</span> <span class="op">~</span> <span class="va">exploration</span> <span class="op">+</span> <span class="va">laissez_faire</span>, data<span class="op">=</span><span class="va">mData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitb</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = independence ~ exploration + laissez_faire, data = mData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1713 -0.7227 -0.0016  0.8303  2.8300 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    0.84015    0.38843   2.163 0.033003 *  
+## exploration    1.99877    0.11211  17.829  &lt; 2e-16 ***
+## laissez_faire -0.11107    0.03165  -3.509 0.000684 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.148 on 97 degrees of freedom
+## Multiple R-squared:  0.807,  Adjusted R-squared:  0.803 
+## F-statistic: 202.7 on 2 and 97 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="中介效果檢驗" class="section level3" number="9.2.4">
+<h3>
+<span class="header-section-number">9.2.4</span> 中介效果檢驗<a class="anchor" aria-label="anchor" href="#%E4%B8%AD%E4%BB%8B%E6%95%88%E6%9E%9C%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>以stargazer套件的stargazer()函數來看三變項之間的關係。</p>
+<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">stargazer</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/stargazer/man/stargazer.html">stargazer</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">fita</span>, <span class="va">fitb</span>, type <span class="op">=</span> <span class="st">"text"</span>, title <span class="op">=</span> <span class="st">"Baron and Kenny Method"</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Baron and Kenny Method
+## =========================================================================================
+##                                              Dependent variable:                         
+##                     ---------------------------------------------------------------------
+##                          independence           exploration            independence      
+##                              (1)                    (2)                     (3)          
+## -----------------------------------------------------------------------------------------
+## exploration                                                              1.999***        
+##                                                                           (0.112)        
+##                                                                                          
+## laissez_faire              0.234***               0.173***               -0.111***       
+##                            (0.052)                (0.023)                 (0.032)        
+##                                                                                          
+## Constant                   5.214***               2.188***                0.840**        
+##                            (0.620)                (0.271)                 (0.388)        
+##                                                                                          
+## -----------------------------------------------------------------------------------------
+## Observations                 100                    100                     100          
+## R2                          0.174                  0.375                   0.807         
+## Adjusted R2                 0.166                  0.368                   0.803         
+## Residual Std. Error    2.363 (df = 98)        1.035 (df = 98)         1.148 (df = 97)    
+## F Statistic         20.696*** (df = 1; 98) 58.688*** (df = 1; 98) 202.746*** (df = 2; 97)
+## =========================================================================================
+## Note:                                                         *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>以multilevel套件的sobel()函數來做Sobel test檢驗中介效果，看indirect effect是否顯著。</p>
+<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.r-project.org">multilevel</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/multilevel/man/sobel.html">sobel</a></span><span class="op">(</span><span class="va">mData</span><span class="op">$</span><span class="va">laissez_faire</span>, <span class="va">mData</span><span class="op">$</span><span class="va">exploration</span>, <span class="va">mData</span><span class="op">$</span><span class="va">independence</span><span class="op">)</span></code></pre></div>
+<pre><code>## $`Mod1: Y~X`
+##              Estimate Std. Error  t value     Pr(&gt;|t|)
+## (Intercept) 5.2142586 0.61960212 8.415495 3.267909e-13
+## pred        0.2343293 0.05150847 4.549335 1.543558e-05
+## 
+## $`Mod2: Y~X+M`
+##               Estimate Std. Error   t value     Pr(&gt;|t|)
+## (Intercept)  0.8401457 0.38842542  2.162952 3.300257e-02
+## pred        -0.1110699 0.03165459 -3.508809 6.841546e-04
+## med          1.9987717 0.11210741 17.829078 2.255937e-32
+## 
+## $`Mod3: M~X`
+##              Estimate Std. Error  t value     Pr(&gt;|t|)
+## (Intercept) 2.1884004  0.2713435 8.065056 1.842647e-12
+## pred        0.1728057  0.0225572 7.660779 1.333137e-11
+## 
+## $Indirect.Effect
+## [1] 0.3453992
+## 
+## $SE
+## [1] 0.04907255
+## 
+## $z.value
+## [1] 7.038542
+## 
+## $N
+## [1] 100</code></pre>
+<p>以bda套件的mediation.test()函數來做Sobel mediation test，變項的順序依序為mv、iv、dv。</p>
+<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">bda</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/bda/man/medtest.html">mediation.test</a></span><span class="op">(</span><span class="va">mData</span><span class="op">$</span><span class="va">exploration</span>, <span class="va">mData</span><span class="op">$</span><span class="va">laissez_faire</span>, <span class="va">mData</span><span class="op">$</span><span class="va">independence</span><span class="op">)</span></code></pre></div>
+<pre><code>##                Sobel       Aroian      Goodman
+## z.value 7.038542e+00 7.029215e+00 7.047906e+00
+## p.value 1.942620e-12 2.076993e-12 1.816300e-12</code></pre>
+</div>
+</div>
+<div id="以psych套件來分析" class="section level2" number="9.3">
+<h2>
+<span class="header-section-number">9.3</span> 以psych套件來分析<a class="anchor" aria-label="anchor" href="#%E4%BB%A5psych%E5%A5%97%E4%BB%B6%E4%BE%86%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<p>用psych套件的mediate()函數來做中介效果的分析。</p>
+<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://personality-project.org/r/psych/">psych</a></span><span class="op">)</span>
+<span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/psych/man/mediate.html">mediate</a></span><span class="op">(</span><span class="va">independence</span> <span class="op">~</span> <span class="va">laissez_faire</span> <span class="op">+</span> <span class="op">(</span><span class="va">exploration</span><span class="op">)</span>, data<span class="op">=</span><span class="va">mData</span>, n.iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> </code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-177-1.png" width="672"></div>
+<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span></code></pre></div>
+<pre><code>## Call: mediate(y = independence ~ laissez_faire + (exploration), data = mData, 
+##     n.iter = 10000)
+## 
+## Direct effect estimates (traditional regression)    (c') X + M on Y 
+##               independence   se     t df     Prob
+## Intercept             0.84 0.39  2.16 97 3.30e-02
+## laissez_faire        -0.11 0.03 -3.51 97 6.84e-04
+## exploration           2.00 0.11 17.83 97 2.26e-32
+## 
+## R = 0.9 R2 = 0.81   F = 202.75 on 2 and 97 DF   p-value:  2.26e-35 
+## 
+##  Total effect estimates (c) (X on Y) 
+##               independence   se    t df     Prob
+## Intercept             5.21 0.62 8.42 98 3.27e-13
+## laissez_faire         0.23 0.05 4.55 98 1.54e-05
+## 
+##  'a'  effect estimates (X on M) 
+##               exploration   se    t df     Prob
+## Intercept            2.19 0.27 8.07 98 1.84e-12
+## laissez_faire        0.17 0.02 7.66 98 1.33e-11
+## 
+##  'b'  effect estimates (M on Y controlling for X) 
+##             independence   se     t df     Prob
+## exploration            2 0.11 17.83 97 2.26e-32
+## 
+##  'ab'  effect estimates (through all  mediators)
+##               independence boot   sd lower upper
+## laissez_faire         0.35 0.35 0.05  0.26  0.44</code></pre>
+<p>畫圖呈現。</p>
+<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/psych/man/mediate.html">mediate.diagram</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-178-1.png" width="672"></div>
+</div>
+<div id="以mediation套件來做分析" class="section level2" number="9.4">
+<h2>
+<span class="header-section-number">9.4</span> 以mediation套件來做分析<a class="anchor" aria-label="anchor" href="#%E4%BB%A5mediation%E5%A5%97%E4%BB%B6%E4%BE%86%E5%81%9A%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<p>以mediation套件來做中介效果的分析。</p>
+<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://imai.princeton.edu/projects/mechanisms.html">mediation</a></span><span class="op">)</span>
+<span class="va">fitM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">exploration</span> <span class="op">~</span> <span class="va">laissez_faire</span>, data<span class="op">=</span><span class="va">mData</span><span class="op">)</span>
+<span class="va">fitY</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">independence</span> <span class="op">~</span> <span class="va">laissez_faire</span> <span class="op">+</span> <span class="va">exploration</span>, data<span class="op">=</span><span class="va">mData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitM</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = exploration ~ laissez_faire, data = mData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.12610 -0.76207 -0.08926  0.60196  2.56513 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    2.18840    0.27134   8.065 1.84e-12 ***
+## laissez_faire  0.17281    0.02256   7.661 1.33e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.035 on 98 degrees of freedom
+## Multiple R-squared:  0.3746, Adjusted R-squared:  0.3682 
+## F-statistic: 58.69 on 1 and 98 DF,  p-value: 1.333e-11</code></pre>
+<div class="sourceCode" id="cb320"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitY</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = independence ~ laissez_faire + exploration, data = mData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1713 -0.7227 -0.0016  0.8303  2.8300 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    0.84015    0.38843   2.163 0.033003 *  
+## laissez_faire -0.11107    0.03165  -3.509 0.000684 ***
+## exploration    1.99877    0.11211  17.829  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.148 on 97 degrees of freedom
+## Multiple R-squared:  0.807,  Adjusted R-squared:  0.803 
+## F-statistic: 202.7 on 2 and 97 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>中介分析的結果如下表。其中，ACME為Average Causal Mediation Effect (indirect effects)，ADE為Average Direct Effect，Prop. Mediated為ACME/Total Effect的比率。由結果可知，laissez_faire可預測independence (b = 0.233, p &lt; .001)，而exploration在此關係中具有中介效果(b = 0.344, p &lt; .001), laissez_faire有直接效果(b = -0.111, p &lt; .001)。</p>
+<div class="sourceCode" id="cb322"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fitMed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mediation/man/mediate.html">mediate</a></span><span class="op">(</span><span class="va">fitM</span>, <span class="va">fitY</span>, treat<span class="op">=</span><span class="st">"laissez_faire"</span>, mediator<span class="op">=</span><span class="st">"exploration"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitMed</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Causal Mediation Analysis 
+## 
+## Quasi-Bayesian Confidence Intervals
+## 
+##                Estimate 95% CI Lower 95% CI Upper p-value    
+## ACME              0.346        0.256         0.44  &lt;2e-16 ***
+## ADE              -0.111       -0.172        -0.05  &lt;2e-16 ***
+## Total Effect      0.235        0.130         0.33  &lt;2e-16 ***
+## Prop. Mediated    1.480        1.163         2.10  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Sample Size Used: 100 
+## 
+## 
+## Simulations: 1000</code></pre>
+<p>效果圖示。</p>
+<div class="sourceCode" id="cb324"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fitMed</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-181-1.png" width="672"></div>
+<div id="bootstrapping法" class="section level3" number="9.4.1">
+<h3>
+<span class="header-section-number">9.4.1</span> Bootstrapping法<a class="anchor" aria-label="anchor" href="#bootstrapping%E6%B3%95"><i class="fas fa-link"></i></a>
+</h3>
+<p>若為小樣本、資料違反常態，可用Bootstrapping法。</p>
+<div class="sourceCode" id="cb325"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fitMedBoot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mediation/man/mediate.html">mediate</a></span><span class="op">(</span><span class="va">fitM</span>, <span class="va">fitY</span>, boot<span class="op">=</span><span class="cn">TRUE</span>, sims<span class="op">=</span><span class="fl">999</span>, treat<span class="op">=</span><span class="st">"laissez_faire"</span>, mediator<span class="op">=</span><span class="st">"exploration"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitMedBoot</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Causal Mediation Analysis 
+## 
+## Nonparametric Bootstrap Confidence Intervals with the Percentile Method
+## 
+##                Estimate 95% CI Lower 95% CI Upper p-value    
+## ACME              0.345        0.262         0.44  &lt;2e-16 ***
+## ADE              -0.111       -0.172        -0.05  &lt;2e-16 ***
+## Total Effect      0.234        0.150         0.33  &lt;2e-16 ***
+## Prop. Mediated    1.474        1.202         1.95  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Sample Size Used: 100 
+## 
+## 
+## Simulations: 999</code></pre>
+<div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fitMedBoot</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-182-1.png" width="672"></div>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></div>
+<div class="next"><a href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#mediation"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99%E4%B8%A6%E7%95%AB%E5%9C%96%E6%AA%A2%E8%A6%96-1"><span class="header-section-number">9.1</span> 讀入資料並畫圖檢視</a></li>
+<li>
+<a class="nav-link" href="#%E4%BB%A5r%E5%85%A7%E5%BB%BA%E7%9A%84lm%E5%87%BD%E6%95%B8%E4%BE%86%E5%81%9A%E5%88%86%E6%9E%90"><span class="header-section-number">9.2</span> 以R內建的lm函數來做分析</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E7%B8%BD%E6%95%88%E6%9E%9C%E6%AA%A2%E9%A9%97"><span class="header-section-number">9.2.1</span> 總效果檢驗</a></li>
+<li><a class="nav-link" href="#%E4%BB%A5%E9%A0%90%E6%B8%AC%E9%A0%85%E4%BE%86%E9%A0%90%E6%B8%AC%E4%B8%AD%E4%BB%8B%E8%AE%8A%E9%A0%85"><span class="header-section-number">9.2.2</span> 以預測項來預測中介變項</a></li>
+<li><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E8%AE%8A%E9%A0%85%E8%88%87%E9%A0%90%E6%B8%AC%E9%A0%85%E5%85%B1%E5%90%8C%E9%A0%90%E6%B8%AC%E4%BE%9D%E8%AE%8A%E9%A0%85"><span class="header-section-number">9.2.3</span> 中介變項與預測項共同預測依變項</a></li>
+<li><a class="nav-link" href="#%E4%B8%AD%E4%BB%8B%E6%95%88%E6%9E%9C%E6%AA%A2%E9%A9%97"><span class="header-section-number">9.2.4</span> 中介效果檢驗</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E4%BB%A5psych%E5%A5%97%E4%BB%B6%E4%BE%86%E5%88%86%E6%9E%90"><span class="header-section-number">9.3</span> 以psych套件來分析</a></li>
+<li>
+<a class="nav-link" href="#%E4%BB%A5mediation%E5%A5%97%E4%BB%B6%E4%BE%86%E5%81%9A%E5%88%86%E6%9E%90"><span class="header-section-number">9.4</span> 以mediation套件來做分析</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#bootstrapping%E6%B3%95"><span class="header-section-number">9.4.1</span> Bootstrapping法</a></li></ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

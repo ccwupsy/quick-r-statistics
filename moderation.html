@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 8 調節效果分析 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 8 調節效果分析 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 8 調節效果分析 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content='本單元介紹如何以R語言做調節效果分析。  8.1 讀入資料並畫圖檢視 以JASP提供的moderation.csv為例，以R做分析。 此資料測量觀察到的寵物鸚鵡與其主人的親近度（closeness）、主人表現出的情感行為量（affection）與鸚鵡的性別。 設定工作目錄。 讀入資料。 cData &lt;- read.table("moderation.csv", header=TRUE,...'>
+<meta property="og:description" content='本單元介紹如何以R語言做調節效果分析。  8.1 讀入資料並畫圖檢視 以JASP提供的moderation.csv為例，以R做分析。 此資料測量觀察到的寵物鸚鵡與其主人的親近度（closeness）、主人表現出的情感行為量（affection）與鸚鵡的性別。 設定工作目錄。 讀入資料。 cData &lt;- read.table("moderation.csv", header=TRUE,...'>
+<meta name="twitter:description" content='本單元介紹如何以R語言做調節效果分析。  8.1 讀入資料並畫圖檢視 以JASP提供的moderation.csv為例，以R做分析。 此資料測量觀察到的寵物鸚鵡與其主人的親近度（closeness）、主人表現出的情感行為量（affection）與鸚鵡的性別。 設定工作目錄。 讀入資料。 cData &lt;- read.table("moderation.csv", header=TRUE,...'>
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="active" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="moderation" class="section level1" number="8">
+<h1>
+<span class="header-section-number">8</span> 調節效果分析<a class="anchor" aria-label="anchor" href="#moderation"><i class="fas fa-link"></i></a>
+</h1>
+<p>本單元介紹如何以R語言做調節效果分析。</p>
+<div id="讀入資料並畫圖檢視" class="section level2" number="8.1">
+<h2>
+<span class="header-section-number">8.1</span> 讀入資料並畫圖檢視<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99%E4%B8%A6%E7%95%AB%E5%9C%96%E6%AA%A2%E8%A6%96"><i class="fas fa-link"></i></a>
+</h2>
+<p>以JASP提供的<a href="https://jasp-stats.org/wp-content/uploads/2020/03/moderation.csv">moderation.csv</a>為例，以R做分析。</p>
+<p>此資料測量觀察到的寵物鸚鵡與其主人的親近度（closeness）、主人表現出的情感行為量（affection）與鸚鵡的性別。</p>
+<p>設定工作目錄。</p>
+<p>讀入資料。</p>
+<div class="sourceCode" id="cb264"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"moderation.csv"</span>, header<span class="op">=</span><span class="cn">TRUE</span>, sep<span class="op">=</span><span class="st">","</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:right;">
+affection
+</th>
+<th style="text-align:right;">
+closeness
+</th>
+<th style="text-align:right;">
+gender_dummy
+</th>
+<th style="text-align:left;">
+gender
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Male
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>畫情感行為量與親近度的散佈圖，並依據不同的鸚鵡性別上色。</p>
+<div class="sourceCode" id="cb265"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span><span class="op">(</span><span class="va">affection</span>, <span class="va">closeness</span>, colour <span class="op">=</span> <span class="va">gender</span>, data <span class="op">=</span> <span class="va">cData</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-143-1.png" width="672"></div>
+</div>
+<div id="調節變項為類別變項" class="section level2" number="8.2">
+<h2>
+<span class="header-section-number">8.2</span> 調節變項為類別變項<a class="anchor" aria-label="anchor" href="#%E8%AA%BF%E7%AF%80%E8%AE%8A%E9%A0%85%E7%82%BA%E9%A1%9E%E5%88%A5%E8%AE%8A%E9%A0%85"><i class="fas fa-link"></i></a>
+</h2>
+<p>以下檢驗是否鸚鵡的性別可以調節主人表現出的情感對他們和鸚鵡之間的親密度。欲測試的想法為：主人表現出的情感對他們和鸚鵡之間的親密度有正向的效果；但對於雄性或雌性鸚鵡，這種效果可能會有所不同。意即，情感對親近的影響是由鸚鵡的性別調節的。</p>
+<div id="模型檢驗" class="section level3" number="8.2.1">
+<h3>
+<span class="header-section-number">8.2.1</span> 模型檢驗<a class="anchor" aria-label="anchor" href="#%E6%A8%A1%E5%9E%8B%E6%AA%A2%E9%A9%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>將情感中心化後，以pequod套件中的lmres()函數做迴歸分析。此函數可直接以type=nested來看兩階段的迴歸模型，一為沒有交互作用項的，一為有交互作用項的，並檢驗加入交互作用項的模型是否顯著。</p>
+<div class="sourceCode" id="cb266"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pequod</span><span class="op">)</span>
+<span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pequod/man/lmres.html">lmres</a></span><span class="op">(</span><span class="va">closeness</span><span class="op">~</span><span class="va">affection</span><span class="op">*</span><span class="va">gender</span>, centered<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"affection"</span><span class="op">)</span>, data<span class="op">=</span><span class="va">cData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m1</span>, type<span class="op">=</span><span class="st">"nested"</span><span class="op">)</span></code></pre></div>
+<pre><code>## **Models**
+## 
+## Model 1: closeness ~ affection + genderMale
+## &lt;environment: 0x0000021973996168&gt;
+## 
+## Model 2: closeness ~ affection + genderMale + affection.XX.genderMale
+## &lt;environment: 0x0000021973996168&gt;
+## 
+## 
+## **Statistics**
+## 
+##             R     R^2   Adj. R^2   Diff.R^2    F     df1  df2    p.value    
+## Model 1    0.88   0.77      0.76       0.77 160.04   2.00   97 &lt; 2.2e-16 ***
+## Model 2:   0.93   0.86      0.86       0.09 197.52   3.00   96 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## **F change**
+## 
+##   Res.Df RSS  Df Sum of Sq    F  Pr(&gt;F)    
+## 1     97 177                               
+## 2     96 106   1        71 64.1 2.7e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## **Coefficients**
+## 
+##                          Estimate    StdErr   t.value    beta   p.value    
+## -- Model 1 --                                                              
+##                                                                            
+## (Intercept)               6.29135   0.19168  32.82144         &lt; 2.2e-16 ***
+## affection                 0.26269   0.02963   8.86462  0.4367 &lt; 2.2e-16 ***
+## genderMale               -4.46269   0.27189 -16.41354 -0.8085 &lt; 2.2e-16 ***
+##                                                                            
+##                                                                            
+## -- Model 2 --                                                              
+##                                                                            
+## (Intercept)               6.36873   0.14950  42.60126         &lt; 2.2e-16 ***
+## affection                 0.41746   0.03009  13.87403  0.6939 &lt; 2.2e-16 ***
+## genderMale               -4.42985   0.21165 -20.93042 -0.8026 &lt; 2.2e-16 ***
+## affection.XX.genderMale  -0.37521   0.04685  -8.00877 -0.3996 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>由上面結果可知兩模型皆顯著，但加入交互作用的模型比未加入的模型可以多解釋9%的變異量，此增加的解釋量達到顯著，<span class="math inline">\(\Delta\)</span>R^2 = .09, F(1,96) = 64.1, p &lt; .001。迴歸式為closeness = 6.37 + 0.42 affection - 4.43 genderM - 0.38 affection<span class="math inline">\(\times\)</span>genderM。</p>
+</div>
+<div id="simple-slope分析" class="section level3" number="8.2.2">
+<h3>
+<span class="header-section-number">8.2.2</span> Simple slope分析<a class="anchor" aria-label="anchor" href="#simple-slope%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h3>
+<p>交互作用顯著，表示有調節效果。接著可做Simple slope分析，看鸚鵡的性別為雄性/雌性與情感在正/負一個標準差時的親密程度預測值。</p>
+<div class="sourceCode" id="cb268"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Sim_m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pequod/man/simpleSlope.html">simpleSlope</a></span><span class="op">(</span><span class="va">m1</span>, pred<span class="op">=</span><span class="st">"affection"</span>, mod1<span class="op">=</span><span class="st">"genderMale"</span>, coded<span class="op">=</span><span class="st">"genderMale"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">Sim_m1</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## ** Estimated points of closeness  **
+## 
+##                       Low affection (-1 SD) High affection (+1 SD)
+## Low genderMale ( 0 )                 4.4440                 8.2935
+## High genderMale ( 1 )                1.7441                 2.1337
+## 
+## 
+## 
+## ** Simple Slopes analysis ( df= 96 ) **
+## 
+##                       simple slope standard error t-value p.value    
+## Low genderMale ( 0 )        0.4175         0.0301   13.87  &lt;2e-16 ***
+## High genderMale ( 1 )       0.0422         0.0359    1.18    0.24    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## 
+## ** Bauer &amp; Curran 95% CI **
+## 
+##            lower CI upper CI
+## genderMale   0.9366   1.3778</code></pre>
+<p>對上述Simple Slope作圖。</p>
+<div class="sourceCode" id="cb270"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/pequod/man/PlotSlope.html">PlotSlope</a></span><span class="op">(</span><span class="va">Sim_m1</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-146-1.png" width="672"></div>
+</div>
+</div>
+<div id="調節變項為連續變項" class="section level2" number="8.3">
+<h2>
+<span class="header-section-number">8.3</span> 調節變項為連續變項<a class="anchor" aria-label="anchor" href="#%E8%AA%BF%E7%AF%80%E8%AE%8A%E9%A0%85%E7%82%BA%E9%80%A3%E7%BA%8C%E8%AE%8A%E9%A0%85"><i class="fas fa-link"></i></a>
+</h2>
+<div id="模型檢驗-1" class="section level3" number="8.3.1">
+<h3>
+<span class="header-section-number">8.3.1</span> 模型檢驗<a class="anchor" aria-label="anchor" href="#%E6%A8%A1%E5%9E%8B%E6%AA%A2%E9%A9%97-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>資料與上面相同，但將情感作為調節變項、鸚鵡的性別做為預測項。迴歸式相同，故迴歸分析結果同上。</p>
+<div class="sourceCode" id="cb271"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pequod</span><span class="op">)</span>
+<span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pequod/man/lmres.html">lmres</a></span><span class="op">(</span><span class="va">closeness</span><span class="op">~</span><span class="va">gender</span><span class="op">*</span><span class="va">affection</span>, centered<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"affection"</span><span class="op">)</span>, data<span class="op">=</span><span class="va">cData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m2</span>, type<span class="op">=</span><span class="st">"nested"</span><span class="op">)</span></code></pre></div>
+<pre><code>## **Models**
+## 
+## Model 1: closeness ~ genderMale + affection
+## &lt;environment: 0x000002197415b570&gt;
+## 
+## Model 2: closeness ~ genderMale + affection + genderMale.XX.affection
+## &lt;environment: 0x000002197415b570&gt;
+## 
+## 
+## **Statistics**
+## 
+##             R     R^2   Adj. R^2   Diff.R^2    F     df1  df2    p.value    
+## Model 1    0.88   0.77      0.76       0.77 160.04   2.00   97 &lt; 2.2e-16 ***
+## Model 2:   0.93   0.86      0.86       0.09 197.52   3.00   96 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## **F change**
+## 
+##   Res.Df RSS  Df Sum of Sq    F  Pr(&gt;F)    
+## 1     97 177                               
+## 2     96 106   1        71 64.1 2.7e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## **Coefficients**
+## 
+##                          Estimate    StdErr   t.value    beta   p.value    
+## -- Model 1 --                                                              
+##                                                                            
+## (Intercept)               6.29135   0.19168  32.82144         &lt; 2.2e-16 ***
+## genderMale               -4.46269   0.27189 -16.41354 -0.8085 &lt; 2.2e-16 ***
+## affection                 0.26269   0.02963   8.86462  0.4367 &lt; 2.2e-16 ***
+##                                                                            
+##                                                                            
+## -- Model 2 --                                                              
+##                                                                            
+## (Intercept)               6.36873   0.14950  42.60126         &lt; 2.2e-16 ***
+## genderMale               -4.42985   0.21165 -20.93042 -0.8026 &lt; 2.2e-16 ***
+## affection                 0.41746   0.03009  13.87403  0.6939 &lt; 2.2e-16 ***
+## genderMale.XX.affection  -0.37521   0.04685  -8.00877 -0.3996 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="simple-slope分析-1" class="section level3" number="8.3.2">
+<h3>
+<span class="header-section-number">8.3.2</span> Simple slope分析<a class="anchor" aria-label="anchor" href="#simple-slope%E5%88%86%E6%9E%90-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>因交互作用顯著，有調節效果，故同樣做simple slope分析。</p>
+<div class="sourceCode" id="cb273"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Sim_m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pequod/man/simpleSlope.html">simpleSlope</a></span><span class="op">(</span><span class="va">m1</span>, pred<span class="op">=</span><span class="st">"genderMale"</span>, mod1<span class="op">=</span><span class="st">"affection"</span>, coded<span class="op">=</span><span class="st">"genderMale"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">Sim_m2</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## ** Estimated points of closeness  **
+## 
+##                        Low genderMale ( 0 ) High genderMale ( 1 )
+## Low affection (-1 SD)                4.4440                1.7441
+## High affection (+1 SD)               8.2935                2.1337
+## 
+## 
+## 
+## ** Simple Slopes analysis ( df= 96 ) **
+## 
+##                        simple slope standard error t-value p.value    
+## Low affection (-1 SD)        -2.700          0.305   -8.84  &lt;2e-16 ***
+## High affection (+1 SD)       -6.160          0.300  -20.57  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## 
+## ** Bauer &amp; Curran 95% CI **
+## 
+##           lower CI upper CI
+## affection  -15.864  -9.2647</code></pre>
+<p>Simple slope分析結果圖。</p>
+<div class="sourceCode" id="cb275"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/pequod/man/PlotSlope.html">PlotSlope</a></span><span class="op">(</span><span class="va">Sim_m2</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-149-1.png" width="672"></div>
+</div>
+<div id="以johnson-neyman-technique" class="section level3" number="8.3.3">
+<h3>
+<span class="header-section-number">8.3.3</span> 以Johnson-Neyman technique<a class="anchor" aria-label="anchor" href="#%E4%BB%A5johnson-neyman-technique"><i class="fas fa-link"></i></a>
+</h3>
+<p>若要以Johnson-Neyman (JN) technique進一步探究調節效果，需要用R內建的lm()函數來做迴歸。</p>
+<p>為了和上面結果相呼應，先產生一個dummy variable: genderD，將男生設為1、女生為0。這邊直接將原dataframe中的gender_dummy以1去減即可。</p>
+<div class="sourceCode" id="cb276"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cData</span><span class="op">$</span><span class="va">genderD</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">cData</span><span class="op">$</span><span class="va">gender_dummy</span></code></pre></div>
+<p>若資料中沒有gender_dummy變項，也可以用plyr套件中的revalue()函數將Male轉為1、Female轉為0，再用as.numeric()函數將之轉為數值。</p>
+<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://had.co.nz/plyr">plyr</a></span><span class="op">)</span>
+<span class="va">cData</span><span class="op">$</span><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/revalue.html">revalue</a></span><span class="op">(</span><span class="va">cData</span><span class="op">$</span><span class="va">gender</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Male"</span><span class="op">=</span><span class="fl">1</span>, <span class="st">'Female'</span><span class="op">=</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>將情感(affection)中心化，產生一新的變項affectionC。</p>
+<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cData</span><span class="op">$</span><span class="va">affectionC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">cData</span><span class="op">$</span><span class="va">affection</span>, center<span class="op">=</span><span class="cn">TRUE</span>, scale<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>以affectionC和genderD來預測closeness。</p>
+<div class="sourceCode" id="cb279"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">closeness</span> <span class="op">~</span> <span class="va">affectionC</span> <span class="op">+</span> <span class="va">genderD</span>, data<span class="op">=</span><span class="va">cData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">res0</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = closeness ~ affectionC + genderD, data = cData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.3733 -0.8598  0.2029  0.8282  3.0625 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  6.29135    0.19168  32.821  &lt; 2e-16 ***
+## affectionC   0.26269    0.02963   8.865 3.78e-14 ***
+## genderD     -4.46269    0.27189 -16.414  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.351 on 97 degrees of freedom
+## Multiple R-squared:  0.7674, Adjusted R-squared:  0.7626 
+## F-statistic:   160 on 2 and 97 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>上述迴歸式加入affectionC*genderD來預測closeness。</p>
+<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">closeness</span> <span class="op">~</span> <span class="va">affectionC</span> <span class="op">+</span> <span class="va">genderD</span> <span class="op">+</span> <span class="va">affectionC</span><span class="op">*</span><span class="va">genderD</span>, data<span class="op">=</span><span class="va">cData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">res1</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = closeness ~ affectionC + genderD + affectionC * 
+##     genderD, data = cData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.18730 -0.74369 -0.06341  0.68137  2.89720 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         6.36873    0.14950  42.601  &lt; 2e-16 ***
+## affectionC          0.41746    0.03009  13.874  &lt; 2e-16 ***
+## genderD            -4.42985    0.21165 -20.930  &lt; 2e-16 ***
+## affectionC:genderD -0.37521    0.04685  -8.009 2.72e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.052 on 96 degrees of freedom
+## Multiple R-squared:  0.8606, Adjusted R-squared:  0.8562 
+## F-statistic: 197.5 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>以anova()比較兩模型。結果同上，有交互作用項的模型有顯著提高解釋力。</p>
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">res0</span>, <span class="va">res1</span><span class="op">)</span></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: closeness ~ affectionC + genderD
+## Model 2: closeness ~ affectionC + genderD + affectionC * genderD
+##   Res.Df    RSS Df Sum of Sq     F    Pr(&gt;F)    
+## 1     97 177.14                                 
+## 2     96 106.19  1    70.948 64.14 2.722e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>用<a href="https://cran.r-project.org/web/packages/processR/index.html">processR</a>來做分析。processR目前無法用在最新版的R 4.2.0版，會讓整個R當掉。但R 4.2.0之前的版本沒有問題。</p>
+<p>尤其processR在R 4.2.0會有問題，下面的程式碼請自行執行，不再demo。</p>
+<p>用modelSummary()來整理迴歸的結果表。</p>
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cardiomoon/processR">processR</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/processR/man/modelsSummary.html">modelsSummary</a></span><span class="op">(</span><span class="va">res1</span><span class="op">)</span></code></pre></div>
+<p>用modelSummary2()來看不同affection(-1SD、0、+1SD)和gender(0、1)組合的closeness。</p>
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/processR/man/modSummary2.html">modSummary2</a></span><span class="op">(</span><span class="va">res1</span>, rangemode<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
+<p>用modSummary3()來看conditional effect。結果顯示，當affectionC為0時，slope為-4.43；affectionC為+1 SD時，slope為-2.70；affectionC為-1 SD時，slope為-6.16。</p>
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/processR/man/modSummary3.html">modSummary3</a></span><span class="op">(</span><span class="va">res1</span>, X<span class="op">=</span><span class="st">'genderD'</span>, W<span class="op">=</span><span class="st">'affectionC'</span>, rangemode<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
+<div id="以rockchalk套件分析" class="section level4" number="8.3.3.1">
+<h4>
+<span class="header-section-number">8.3.3.1</span> 以rockchalk套件分析<a class="anchor" aria-label="anchor" href="#%E4%BB%A5rockchalk%E5%A5%97%E4%BB%B6%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h4>
+<p>以rockchalk套件的plotSlopes()來畫上述conditional effect的圖。</p>
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rockchalk</span><span class="op">)</span>
+<span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rockchalk/man/plotSlopes.html">plotSlopes</a></span><span class="op">(</span><span class="va">res1</span>, plotx<span class="op">=</span><span class="st">"genderD"</span>, modx<span class="op">=</span><span class="st">"affectionC"</span>, modxVals<span class="op">=</span><span class="st">"std.dev"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-159-1.png" width="672"></div>
+<p>Johnson-Neyman (JN) technique: 檢驗各affectC下的conditional effect，其slope是否顯著。</p>
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rockchalk/man/testSlopes.html">testSlopes</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span></code></pre></div>
+<pre><code>## Values of affectionC OUTSIDE this interval:
+##         lo         hi 
+## -15.931548  -9.238178 
+## cause the slope of (b1 + b2*affectionC)genderD to be statistically significant</code></pre>
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-160-1.png" width="672"></div>
+</div>
+<div id="以interacions套件分析" class="section level4" number="8.3.3.2">
+<h4>
+<span class="header-section-number">8.3.3.2</span> 以interacions套件分析<a class="anchor" aria-label="anchor" href="#%E4%BB%A5interacions%E5%A5%97%E4%BB%B6%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h4>
+<p><a href="https://cran.r-project.org/web/packages/interactions/readme/README.html">interactions套件</a>也提供很好的視覺化圖表功能，可用來看conditional effect與Johnson-Neyman分析。</p>
+<p>畫conditional effect的圖，含資料點。</p>
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://interactions.jacob-long.com">interactions</a></span><span class="op">)</span>
+<span class="fu"><a href="https://interactions.jacob-long.com/reference/interact_plot.html">interact_plot</a></span><span class="op">(</span><span class="va">res1</span>, pred <span class="op">=</span> <span class="va">genderD</span>, modx <span class="op">=</span> <span class="va">affectionC</span>, plot.points <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-161-1.png" width="672"></div>
+<p>畫conditional effect的圖，含信賴區間。</p>
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://interactions.jacob-long.com/reference/interact_plot.html">interact_plot</a></span><span class="op">(</span><span class="va">res1</span>, pred <span class="op">=</span> <span class="va">genderD</span>, modx <span class="op">=</span> <span class="va">affectionC</span>, interval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-162-1.png" width="672"></div>
+<p>做Johnson-Neyman分析。</p>
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://interactions.jacob-long.com/reference/sim_slopes.html">sim_slopes</a></span><span class="op">(</span><span class="va">res1</span>, pred <span class="op">=</span> <span class="va">genderD</span>, modx <span class="op">=</span> <span class="va">affectionC</span>, jnplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## JOHNSON-NEYMAN INTERVAL 
+## 
+## When affectionC is OUTSIDE the interval [-15.93, -9.24], the slope of
+## genderD is p &lt; .05.
+## 
+## Note: The range of observed values of affectionC is [-10.12, 13.88]</code></pre>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-163-1.png" width="672"></div>
+<pre><code>## SIMPLE SLOPES ANALYSIS 
+## 
+## Slope of genderD when affectionC = -4.61066e+00 (- 1 SD): 
+## 
+##    Est.   S.E.   t val.      p
+## ------- ------ -------- ------
+##   -2.70   0.31    -8.84   0.00
+## 
+## Slope of genderD when affectionC =  7.81597e-16 (Mean): 
+## 
+##    Est.   S.E.   t val.      p
+## ------- ------ -------- ------
+##   -4.43   0.21   -20.93   0.00
+## 
+## Slope of genderD when affectionC =  4.61066e+00 (+ 1 SD): 
+## 
+##    Est.   S.E.   t val.      p
+## ------- ------ -------- ------
+##   -6.16   0.30   -20.57   0.00</code></pre>
+<p>或是用john_neyman()函數來做圖。</p>
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://interactions.jacob-long.com/reference/johnson_neyman.html">johnson_neyman</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">res1</span>, pred <span class="op">=</span> <span class="va">genderD</span>, modx <span class="op">=</span> <span class="va">affectionC</span><span class="op">)</span></code></pre></div>
+<pre><code>## JOHNSON-NEYMAN INTERVAL 
+## 
+## When affectionC is OUTSIDE the interval [-15.93, -9.24], the slope of
+## genderD is p &lt; .05.
+## 
+## Note: The range of observed values of affectionC is [-10.12, 13.88]</code></pre>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-164-1.png" width="672"></div>
+</div>
+<div id="用process-macro來分析" class="section level4" number="8.3.3.3">
+<h4>
+<span class="header-section-number">8.3.3.3</span> 用process macro來分析<a class="anchor" aria-label="anchor" href="#%E7%94%A8process-macro%E4%BE%86%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h4>
+<p>若是習慣使用Andrew Hayes發展的process macro，可先到<a href="https://www.processmacro.org/index.html">process的網站</a>下載檔案。解壓縮後直接執行process.R。可用source(‘檔案路徑’)來執行，或全選後按run執行，前者會快一些，因為不會列印出一堆文字。</p>
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">'D:\\Dropbox\\processR\\PROCESS v4.1 for R\\process.R'</span><span class="op">)</span></code></pre></div>
+<p>同上的model，以process來做分析。model=1是調節模型，jn=1表示要執行Johnson–Neyman Technique分析。center=2表示僅將連續變項中心化，plot=1表示要輸出Data for visualizing the conditional effect of the focal predictor。</p>
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">process</span><span class="op">(</span>data<span class="op">=</span><span class="va">cData</span>,y<span class="op">=</span><span class="st">"closeness"</span>,x<span class="op">=</span><span class="st">"genderD"</span>,w<span class="op">=</span><span class="st">"affection"</span>, model<span class="op">=</span><span class="fl">1</span>, center<span class="op">=</span><span class="fl">2</span>, jn<span class="op">=</span><span class="fl">1</span>, plot<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
+
+</div>
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></div>
+<div class="next"><a href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#moderation"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99%E4%B8%A6%E7%95%AB%E5%9C%96%E6%AA%A2%E8%A6%96"><span class="header-section-number">8.1</span> 讀入資料並畫圖檢視</a></li>
+<li>
+<a class="nav-link" href="#%E8%AA%BF%E7%AF%80%E8%AE%8A%E9%A0%85%E7%82%BA%E9%A1%9E%E5%88%A5%E8%AE%8A%E9%A0%85"><span class="header-section-number">8.2</span> 調節變項為類別變項</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%AA%A2%E9%A9%97"><span class="header-section-number">8.2.1</span> 模型檢驗</a></li>
+<li><a class="nav-link" href="#simple-slope%E5%88%86%E6%9E%90"><span class="header-section-number">8.2.2</span> Simple slope分析</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E8%AA%BF%E7%AF%80%E8%AE%8A%E9%A0%85%E7%82%BA%E9%80%A3%E7%BA%8C%E8%AE%8A%E9%A0%85"><span class="header-section-number">8.3</span> 調節變項為連續變項</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%AA%A2%E9%A9%97-1"><span class="header-section-number">8.3.1</span> 模型檢驗</a></li>
+<li><a class="nav-link" href="#simple-slope%E5%88%86%E6%9E%90-1"><span class="header-section-number">8.3.2</span> Simple slope分析</a></li>
+<li><a class="nav-link" href="#%E4%BB%A5johnson-neyman-technique"><span class="header-section-number">8.3.3</span> 以Johnson-Neyman technique</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

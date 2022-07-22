@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 3 假設檢定 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 3 假設檢定 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 3 假設檢定 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content='以R語言讀入資料並做假設檢定，包含常態檢定、獨立與相依t檢定。  3.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 × 8...'>
+<meta property="og:description" content='以R語言讀入資料並做假設檢定，包含常態檢定、獨立與相依t檢定。  3.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 × 8...'>
+<meta name="twitter:description" content='以R語言讀入資料並做假設檢定，包含常態檢定、獨立與相依t檢定。  3.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 × 8...'>
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="active" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="hypotesting" class="section level1" number="3">
+<h1>
+<span class="header-section-number">3</span> 假設檢定<a class="anchor" aria-label="anchor" href="#hypotesting"><i class="fas fa-link"></i></a>
+</h1>
+<p>以R語言讀入資料並做假設檢定，包含常態檢定、獨立與相依t檢定。</p>
+<div id="讀入檔案-2" class="section level2" number="3.1">
+<h2>
+<span class="header-section-number">3.1</span> 讀入檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的<a href="https://docs.google.com/spreadsheets/d/1qx6T0brgzuigBpS0p-Wq8hVSFFku9ebV/edit#gid=390389518">gData1.xlsx檔</a>。</p>
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="va">gData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"gData1.xlsx"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 8
+##   學號      性別   組別  出席  影片 期中考 期末考 總成績
+##   &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 102368014 M         9   8.5  82.6     32   28     56.0
+## 2 102368018 M        10   9.5  82.9     66   59     78.8
+## 3 102368024 F         9   8    82.6     69   68     81.2
+## 4 102368027 F         9   8    82.6     68   83.5   86.0
+## 5 102368030 F        11   0    66.5     39   30     45.2
+## 6 100368033 M         4  12    73.3     58   79     82.1</code></pre>
+</div>
+<div id="常態檢定" class="section level2" number="3.2">
+<h2>
+<span class="header-section-number">3.2</span> 常態檢定<a class="anchor" aria-label="anchor" href="#%E5%B8%B8%E6%85%8B%E6%AA%A2%E5%AE%9A"><i class="fas fa-link"></i></a>
+</h2>
+<p>以qqnorm()和qqline()來看常態Q-Q圖。</p>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html">qqnorm</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html">qqline</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-52-1.png" width="672"></div>
+<p>以shapiro.test()做常態檢定。</p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  gData1$總成績
+## W = 0.98346, p-value = 0.6243</code></pre>
+</div>
+<div id="獨立樣本t檢定" class="section level2" number="3.3">
+<h2>
+<span class="header-section-number">3.3</span> 獨立樣本t檢定<a class="anchor" aria-label="anchor" href="#%E7%8D%A8%E7%AB%8B%E6%A8%A3%E6%9C%ACt%E6%AA%A2%E5%AE%9A"><i class="fas fa-link"></i></a>
+</h2>
+<p>先將性別轉為factor。</p>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span></code></pre></div>
+<p>以leveneTest()做變異數同質性檢定。</p>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-forge.r-project.org/projects/car/">car</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/car/man/leveneTest.html">leveneTest</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">~</span> <span class="va">gData1</span><span class="op">$</span><span class="va">性別</span>, center<span class="op">=</span><span class="st">"mean"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Levene's Test for Homogeneity of Variance (center = "mean")
+##       Df F value Pr(&gt;F)
+## group  1  0.2112 0.6476
+##       55</code></pre>
+<p>以獨立樣本t檢定比較男女在總成績上是否有差異。</p>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">~</span> <span class="va">gData1</span><span class="op">$</span><span class="va">性別</span>, var.equal<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  gData1$總成績 by gData1$性別
+## t = -0.62999, df = 55, p-value = 0.5313
+## alternative hypothesis: true difference in means between group F and group M is not equal to 0
+## 95 percent confidence interval:
+##  -7.892010  4.116907
+## sample estimates:
+## mean in group F mean in group M 
+##        73.43611        75.32366</code></pre>
+</div>
+<div id="相依樣本t檢定" class="section level2" number="3.4">
+<h2>
+<span class="header-section-number">3.4</span> 相依樣本t檢定<a class="anchor" aria-label="anchor" href="#%E7%9B%B8%E4%BE%9D%E6%A8%A3%E6%9C%ACt%E6%AA%A2%E5%AE%9A"><i class="fas fa-link"></i></a>
+</h2>
+<p>以t.test()做相依樣本t檢定，比較期中考和期末考是否有差異。</p>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">期中考</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">期末考</span>, pair<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  gData1$期中考 and gData1$期末考
+## t = -2.3616, df = 56, p-value = 0.0217
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  -8.3334024 -0.6841415
+## sample estimates:
+## mean difference 
+##       -4.508772</code></pre>
+<p>t.test()預設為雙尾檢定，若要做單尾檢定，可加入alternative的參數，可設定為”greater” 或 “less”。</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">期中考</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">期末考</span>, alternative<span class="op">=</span><span class="st">'less'</span>,  pair<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  gData1$期中考 and gData1$期末考
+## t = -2.3616, df = 56, p-value = 0.01085
+## alternative hypothesis: true mean difference is less than 0
+## 95 percent confidence interval:
+##       -Inf -1.315556
+## sample estimates:
+## mean difference 
+##       -4.508772</code></pre>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></div>
+<div class="next"><a href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#hypotesting"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-2"><span class="header-section-number">3.1</span> 讀入檔案</a></li>
+<li><a class="nav-link" href="#%E5%B8%B8%E6%85%8B%E6%AA%A2%E5%AE%9A"><span class="header-section-number">3.2</span> 常態檢定</a></li>
+<li><a class="nav-link" href="#%E7%8D%A8%E7%AB%8B%E6%A8%A3%E6%9C%ACt%E6%AA%A2%E5%AE%9A"><span class="header-section-number">3.3</span> 獨立樣本t檢定</a></li>
+<li><a class="nav-link" href="#%E7%9B%B8%E4%BE%9D%E6%A8%A3%E6%9C%ACt%E6%AA%A2%E5%AE%9A"><span class="header-section-number">3.4</span> 相依樣本t檢定</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

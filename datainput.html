@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 1 資料的讀入與整理 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 1 資料的讀入與整理 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 1 資料的讀入與整理 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content="本單元介紹如何以R語言讀入資料、整理資料、並做初步分析。  1.1 讀入資料  1.1.1 下載範例資料 本單元使用的範例資料為一虛擬的課程成績檔。請下載至本地端。  1.1.2 設定工作目錄...">
+<meta property="og:description" content="本單元介紹如何以R語言讀入資料、整理資料、並做初步分析。  1.1 讀入資料  1.1.1 下載範例資料 本單元使用的範例資料為一虛擬的課程成績檔。請下載至本地端。  1.1.2 設定工作目錄...">
+<meta name="twitter:description" content="本單元介紹如何以R語言讀入資料、整理資料、並做初步分析。  1.1 讀入資料  1.1.1 下載範例資料 本單元使用的範例資料為一虛擬的課程成績檔。請下載至本地端。  1.1.2 設定工作目錄...">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="active" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="datainput" class="section level1" number="1">
+<h1>
+<span class="header-section-number">1</span> 資料的讀入與整理<a class="anchor" aria-label="anchor" href="#datainput"><i class="fas fa-link"></i></a>
+</h1>
+<p>本單元介紹如何以R語言讀入資料、整理資料、並做初步分析。</p>
+<div id="讀入資料" class="section level2" number="1.1">
+<h2>
+<span class="header-section-number">1.1</span> 讀入資料<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h2>
+<div id="下載範例資料" class="section level3" number="1.1.1">
+<h3>
+<span class="header-section-number">1.1.1</span> 下載範例資料<a class="anchor" aria-label="anchor" href="#%E4%B8%8B%E8%BC%89%E7%AF%84%E4%BE%8B%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h3>
+<p>本單元使用的範例資料為一虛擬的<a href="https://docs.google.com/spreadsheets/d/1OMVwYZlCmgamESSUUR62tAF_Q_8NabZQ/edit#gid=506295809">課程成績檔</a>。請下載至本地端。</p>
+</div>
+<div id="設定工作目錄" class="section level3" number="1.1.2">
+<h3>
+<span class="header-section-number">1.1.2</span> 設定工作目錄<a class="anchor" aria-label="anchor" href="#%E8%A8%AD%E5%AE%9A%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84"><i class="fas fa-link"></i></a>
+</h3>
+<p>將R的工作目錄設定至存放檔案的目錄下。語法為setwd(“檔案所在地的絕對路徑”)，記得資料夾要用\來分隔，例如setwd(“D:\DIR1\DIR2\DIR3”)。設定好之後，可以用getwd()來檢視是否成功。</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span><span class="op">(</span><span class="st">"D:\\dropbox\\Working\\教師社群"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "D:/Dropbox/Working/教師社群"</code></pre>
+</div>
+<div id="讀入檔案" class="section level3" number="1.1.3">
+<h3>
+<span class="header-section-number">1.1.3</span> 讀入檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88"><i class="fas fa-link"></i></a>
+</h3>
+<p>以xlsx套件的read.xlsx()函數來讀入excel檔，此函數有賴java。</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/colearendt/xlsx">xlsx</a></span><span class="op">)</span>
+<span class="va">gData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/xlsx/man/read.xlsx.html">read.xlsx</a></span><span class="op">(</span><span class="st">"成績.xlsx"</span>, <span class="fl">1</span>, encoding <span class="op">=</span> <span class="st">"UTF-8"</span>, stringsAsFactors<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>##        學號 性別 組別 出席 影片團評 影片老師評分 期中考 期末考
+## 1 102368014    M    9  8.5    24.05          8.5     32     28
+## 2 102368018    M   10  9.5    24.26          8.5     66     59
+## 3 102368024    F    9    8    24.05          8.5     69     68
+## 4 102368027    F    9    8    24.05          8.5     68   83.5
+## 5 102368030    F   11    0    18.92            7     39     30
+## 6 100368033    M    4   12       20            8     58     79</code></pre>
+<p>也可以用readxl套件的read_xlsx()函數來讀入excel檔，此函數不需java。請注意以不同函數讀入資料時，資料的格式會稍有不同，後續在叫出資料時需注意。</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="va">gData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"成績.xlsx"</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div id="資料檢視" class="section level2" number="1.2">
+<h2>
+<span class="header-section-number">1.2</span> 資料檢視<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E6%AA%A2%E8%A6%96"><i class="fas fa-link"></i></a>
+</h2>
+<p>資料中，有兩位學生已退選，不納入成績計算，可先刪除不要的資料（即選擇要的資料）。</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData</span> <span class="op">&lt;-</span> <span class="va">gData</span><span class="op">[</span><span class="va">gData</span><span class="op">$</span><span class="va">期末考</span> <span class="op">!=</span> <span class="st">"."</span>, <span class="op">]</span></code></pre></div>
+<div id="檢視資料類型" class="section level3" number="1.2.1">
+<h3>
+<span class="header-section-number">1.2.1</span> 檢視資料類型<a class="anchor" aria-label="anchor" href="#%E6%AA%A2%E8%A6%96%E8%B3%87%E6%96%99%E9%A1%9E%E5%9E%8B"><i class="fas fa-link"></i></a>
+</h3>
+<p>可在RStudio右方的Environment中雙擊變項名稱來檢視變項，變項為dataframe的型式。 或使用str(變項名稱)來檢視dataframe下的每個變項類型。</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>## 'data.frame':    57 obs. of  8 variables:
+##  $ 學號        : chr  "102368014" "102368018" "102368024" "102368027" ...
+##  $ 性別        : chr  "M" "M" "F" "F" ...
+##  $ 組別        : num  9 10 9 9 11 4 4 4 6 6 ...
+##  $ 出席        : chr  "8.5" "9.5" "8" "8" ...
+##  $ 影片團評    : chr  "24.05" "24.26" "24.05" "24.05" ...
+##  $ 影片老師評分: chr  "8.5" "8.5" "8.5" "8.5" ...
+##  $ 期中考      : chr  "32" "66" "69" "68" ...
+##  $ 期末考      : chr  "28" "59" "68" "83.5" ...</code></pre>
+</div>
+<div id="資料類型的轉換" class="section level3" number="1.2.2">
+<h3>
+<span class="header-section-number">1.2.2</span> 資料類型的轉換<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E9%A1%9E%E5%9E%8B%E7%9A%84%E8%BD%89%E6%8F%9B"><i class="fas fa-link"></i></a>
+</h3>
+<p>將資料中，出席至期末考的類型從文字轉為數字。</p>
+<p>以期中考為例，可用as.numeric()來做轉換。</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData</span><span class="op">$</span><span class="va">期中考</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">期中考</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>## 'data.frame':    57 obs. of  8 variables:
+##  $ 學號        : chr  "102368014" "102368018" "102368024" "102368027" ...
+##  $ 性別        : chr  "M" "M" "F" "F" ...
+##  $ 組別        : num  9 10 9 9 11 4 4 4 6 6 ...
+##  $ 出席        : chr  "8.5" "9.5" "8" "8" ...
+##  $ 影片團評    : chr  "24.05" "24.26" "24.05" "24.05" ...
+##  $ 影片老師評分: chr  "8.5" "8.5" "8.5" "8.5" ...
+##  $ 期中考      : num  32 66 69 68 39 58 67 55 40 54 ...
+##  $ 期末考      : chr  "28" "59" "68" "83.5" ...</code></pre>
+<p>若要一次轉換多個變項，可用sapply。</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">gData</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span>, <span class="va">as.numeric</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>## 'data.frame':    57 obs. of  8 variables:
+##  $ 學號        : chr  "102368014" "102368018" "102368024" "102368027" ...
+##  $ 性別        : chr  "M" "M" "F" "F" ...
+##  $ 組別        : num  9 10 9 9 11 4 4 4 6 6 ...
+##  $ 出席        : num  8.5 9.5 8 8 0 12 12 5 12 12 ...
+##  $ 影片團評    : num  24.1 24.3 24.1 24.1 18.9 ...
+##  $ 影片老師評分: num  8.5 8.5 8.5 8.5 7 8 8 8 8 8 ...
+##  $ 期中考      : num  32 66 69 68 39 58 67 55 40 54 ...
+##  $ 期末考      : num  28 59 68 83.5 30 79 78 56.5 49.5 60.5 ...</code></pre>
+</div>
+<div id="檢視各組人數" class="section level3" number="1.2.3">
+<h3>
+<span class="header-section-number">1.2.3</span> 檢視各組人數<a class="anchor" aria-label="anchor" href="#%E6%AA%A2%E8%A6%96%E5%90%84%E7%B5%84%E4%BA%BA%E6%95%B8"><i class="fas fa-link"></i></a>
+</h3>
+<p>可用table()來檢視男女人數和各組人數。</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>
+<span class="va">gTable1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span><span class="op">)</span>
+<span class="va">gTable2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">組別</span><span class="op">)</span><span class="op">)</span>
+<span class="va">gTable1</span></code></pre></div>
+<pre><code>## 
+##  F  M 
+## 30 27 
+##   Var1 Freq
+## 1    F   30
+## 2    M   27</code></pre>
+<p>檢視各組中的男女人數。</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">性別</span>, <span class="va">gData</span><span class="op">$</span><span class="va">組別</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">性別</span>, <span class="va">gData</span><span class="op">$</span><span class="va">組別</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##    
+##     1 2 3 4 5 6 7 8 9 10 11 12
+##   F 1 4 5 4 2 2 3 1 2  2  3  1
+##   M 3 2 2 2 3 3 1 4 1  3  1  2
+##   1 2 3 4 5 6 7 8 9 10 11 12
+## F 1 4 5 4 2 2 3 1 2  2  3  1
+## M 3 2 2 2 3 3 1 4 1  3  1  2</code></pre>
+</div>
+</div>
+<div id="分數的轉換和計算" class="section level2" number="1.3">
+<h2>
+<span class="header-section-number">1.3</span> 分數的轉換和計算<a class="anchor" aria-label="anchor" href="#%E5%88%86%E6%95%B8%E7%9A%84%E8%BD%89%E6%8F%9B%E5%92%8C%E8%A8%88%E7%AE%97"><i class="fas fa-link"></i></a>
+</h2>
+<p>因影片的評分分別為滿分30分（團評）和滿分10分（老師評分），須轉換為百分制並加以平均。</p>
+<div id="換為百分制" class="section level3" number="1.3.1">
+<h3>
+<span class="header-section-number">1.3.1</span> 換為百分制<a class="anchor" aria-label="anchor" href="#%E6%8F%9B%E7%82%BA%E7%99%BE%E5%88%86%E5%88%B6"><i class="fas fa-link"></i></a>
+</h3>
+<p>將影片團評和老師評分轉換為百分制。</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData</span><span class="op">$</span><span class="va">影片團評新</span> <span class="op">&lt;-</span> <span class="va">gData</span><span class="op">$</span><span class="va">影片團評</span> <span class="op">/</span> <span class="fl">30</span> <span class="op">*</span> <span class="fl">100</span>
+<span class="va">gData</span><span class="op">$</span><span class="va">影片老師評分新</span> <span class="op">&lt;-</span> <span class="va">gData</span><span class="op">$</span><span class="va">影片老師評分</span> <span class="op">/</span> <span class="fl">10</span> <span class="op">*</span> <span class="fl">100</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>##        學號 性別 組別 出席 影片團評 影片老師評分 期中考 期末考 影片團評新
+## 1 102368014    M    9  8.5    24.05          8.5     32   28.0   80.16667
+## 2 102368018    M   10  9.5    24.26          8.5     66   59.0   80.86667
+## 3 102368024    F    9  8.0    24.05          8.5     69   68.0   80.16667
+## 4 102368027    F    9  8.0    24.05          8.5     68   83.5   80.16667
+## 5 102368030    F   11  0.0    18.92          7.0     39   30.0   63.06667
+## 6 100368033    M    4 12.0    20.00          8.0     58   79.0   66.66667
+##   影片老師評分新
+## 1             85
+## 2             85
+## 3             85
+## 4             85
+## 5             70
+## 6             80</code></pre>
+</div>
+<div id="將兩變項平均" class="section level3" number="1.3.2">
+<h3>
+<span class="header-section-number">1.3.2</span> 將兩變項平均<a class="anchor" aria-label="anchor" href="#%E5%B0%87%E5%85%A9%E8%AE%8A%E9%A0%85%E5%B9%B3%E5%9D%87"><i class="fas fa-link"></i></a>
+</h3>
+<p>直接相加除以2或用rowMeans()來做都可以。</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData</span><span class="op">$</span><span class="va">影片</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">gData</span><span class="op">$</span><span class="va">影片團評新</span> <span class="op">+</span> <span class="va">gData</span><span class="op">$</span><span class="va">影片老師評分新</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span>
+<span class="va">gData</span><span class="op">$</span><span class="va">影片</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">gData</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"影片團評新"</span>, <span class="st">"影片老師評分新"</span><span class="op">)</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData</span><span class="op">)</span></code></pre></div>
+<pre><code>##        學號 性別 組別 出席 影片團評 影片老師評分 期中考 期末考 影片團評新
+## 1 102368014    M    9  8.5    24.05          8.5     32   28.0   80.16667
+## 2 102368018    M   10  9.5    24.26          8.5     66   59.0   80.86667
+## 3 102368024    F    9  8.0    24.05          8.5     69   68.0   80.16667
+## 4 102368027    F    9  8.0    24.05          8.5     68   83.5   80.16667
+## 5 102368030    F   11  0.0    18.92          7.0     39   30.0   63.06667
+## 6 100368033    M    4 12.0    20.00          8.0     58   79.0   66.66667
+##   影片老師評分新     影片
+## 1             85 82.58333
+## 2             85 82.93333
+## 3             85 82.58333
+## 4             85 82.58333
+## 5             70 66.53333
+## 6             80 73.33333</code></pre>
+</div>
+<div id="抽取部份資料加以計算" class="section level3" number="1.3.3">
+<h3>
+<span class="header-section-number">1.3.3</span> 抽取部份資料加以計算<a class="anchor" aria-label="anchor" href="#%E6%8A%BD%E5%8F%96%E9%83%A8%E4%BB%BD%E8%B3%87%E6%96%99%E5%8A%A0%E4%BB%A5%E8%A8%88%E7%AE%97"><i class="fas fa-link"></i></a>
+</h3>
+<p>抽取出最後要分析的變項，使資料更簡潔。抽取資料的兩種方法為：(1) 資料框名稱[列,行]；(2)subset(變項名稱, 行的條件, select=c(列的名稱))。</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span> <span class="op">&lt;-</span> <span class="va">gData</span><span class="op">[</span>,<span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">9</span>,<span class="fl">10</span><span class="op">)</span><span class="op">]</span>
+<span class="va">gData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gData</span>, select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"學號"</span>, <span class="st">"性別"</span>, <span class="st">"組別"</span>, <span class="st">"出席"</span>, <span class="st">"影片"</span>, <span class="st">"期中考"</span>, <span class="st">"期末考"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>##        學號 性別 組別 出席     影片 期中考 期末考
+## 1 102368014    M    9  8.5 82.58333     32   28.0
+## 2 102368018    M   10  9.5 82.93333     66   59.0
+## 3 102368024    F    9  8.0 82.58333     69   68.0
+## 4 102368027    F    9  8.0 82.58333     68   83.5
+## 5 102368030    F   11  0.0 66.53333     39   30.0
+## 6 100368033    M    4 12.0 73.33333     58   79.0</code></pre>
+<p>假設總成績為期中考+期末考+影片的平均，再加上出席分數，則可以下列方式計算。</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">期中考</span> <span class="op">+</span> <span class="va">gData1</span><span class="op">$</span><span class="va">期末考</span> <span class="op">+</span> <span class="va">gData1</span><span class="op">$</span><span class="va">影片</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span> <span class="op">+</span> <span class="va">gData1</span><span class="op">$</span><span class="va">出席</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>##        學號 性別 組別 出席     影片 期中考 期末考   總成績
+## 1 102368014    M    9  8.5 82.58333     32   28.0 56.02778
+## 2 102368018    M   10  9.5 82.93333     66   59.0 78.81111
+## 3 102368024    F    9  8.0 82.58333     69   68.0 81.19444
+## 4 102368027    F    9  8.0 82.58333     68   83.5 86.02778
+## 5 102368030    F   11  0.0 66.53333     39   30.0 45.17778
+## 6 100368033    M    4 12.0 73.33333     58   79.0 82.11111</code></pre>
+</div>
+<div id="資料數值的檢視與取代" class="section level3" number="1.3.4">
+<h3>
+<span class="header-section-number">1.3.4</span> 資料數值的檢視與取代<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E6%95%B8%E5%80%BC%E7%9A%84%E6%AA%A2%E8%A6%96%E8%88%87%E5%8F%96%E4%BB%A3"><i class="fas fa-link"></i></a>
+</h3>
+<p>檢視總成績資料，將大於100和小於60者挑選出來，並以新成績取代。</p>
+<div id="檢視資料的最大最小值" class="section level4" number="1.3.4.1">
+<h4>
+<span class="header-section-number">1.3.4.1</span> 檢視資料的最大最小值<a class="anchor" aria-label="anchor" href="#%E6%AA%A2%E8%A6%96%E8%B3%87%E6%96%99%E7%9A%84%E6%9C%80%E5%A4%A7%E6%9C%80%E5%B0%8F%E5%80%BC"><i class="fas fa-link"></i></a>
+</h4>
+<p>可用max()和min()來檢視總成績的最大最小值。</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 102.4889
+## [1] 45.17778</code></pre>
+</div>
+<div id="找出符合條件的資料" class="section level4" number="1.3.4.2">
+<h4>
+<span class="header-section-number">1.3.4.2</span> 找出符合條件的資料<a class="anchor" aria-label="anchor" href="#%E6%89%BE%E5%87%BA%E7%AC%A6%E5%90%88%E6%A2%9D%E4%BB%B6%E7%9A%84%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h4>
+<p>以which()找出大於100和小於60的資料位置，並叫出來看。</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&lt;</span> <span class="fl">60</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<pre><code>##         學號 性別 組別 出席     影片 期中考 期末考   總成績
+## 1  102368014    M    9  8.5 82.58333     32     28 56.02778
+## 5  102368030    F   11  0.0 66.53333     39     30 45.17778
+## 48 103368042    F    4  8.0 73.33333     45      0 47.44444
+## 51 103368047    M   12  5.0 77.11667     52     35 59.70556
+## 58 103365306    F   11 12.0 66.53333     29     47 59.51111</code></pre>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&gt;</span> <span class="fl">100</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<pre><code>##         學號 性別 組別 出席     影片 期中考 期末考   總成績
+## 43 103368037    M    5   12 82.46667     89    100 102.4889</code></pre>
+</div>
+<div id="取代資料" class="section level4" number="1.3.4.3">
+<h4>
+<span class="header-section-number">1.3.4.3</span> 取代資料<a class="anchor" aria-label="anchor" href="#%E5%8F%96%E4%BB%A3%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h4>
+<p>將總成績大於100者以100取代，總成績不滿60但接近60者以60取代。</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&gt;</span> <span class="fl">100</span><span class="op">)</span>,<span class="st">'總成績'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&lt;</span> <span class="fl">60</span> <span class="op">&amp;</span> <span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&gt;</span> <span class="fl">59</span><span class="op">)</span>, <span class="st">'總成績'</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">60</span></code></pre></div>
+</div>
+<div id="確認執行結果" class="section level4" number="1.3.4.4">
+<h4>
+<span class="header-section-number">1.3.4.4</span> 確認執行結果<a class="anchor" aria-label="anchor" href="#%E7%A2%BA%E8%AA%8D%E5%9F%B7%E8%A1%8C%E7%B5%90%E6%9E%9C"><i class="fas fa-link"></i></a>
+</h4>
+<p>用which檢視還有哪些學生總成績小於60或大於100。</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&lt;</span> <span class="fl">60</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<pre><code>##         學號 性別 組別 出席     影片 期中考 期末考   總成績
+## 1  102368014    M    9  8.5 82.58333     32     28 56.02778
+## 5  102368030    F   11  0.0 66.53333     39     30 45.17778
+## 48 103368042    F    4  8.0 73.33333     45      0 47.44444</code></pre>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span> <span class="op">&gt;</span> <span class="fl">100</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<pre><code>## [1] 學號   性別   組別   出席   影片   期中考 期末考 總成績
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<p>檢視原來59分的兩位學生的成績。</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">學號</span> <span class="op">==</span> <span class="st">"103368047"</span> <span class="op">|</span> <span class="va">gData1</span><span class="op">$</span><span class="va">學號</span> <span class="op">==</span> <span class="st">"103365306"</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
+<pre><code>##         學號 性別 組別 出席     影片 期中考 期末考 總成績
+## 51 103368047    M   12    5 77.11667     52     35     60
+## 58 103365306    F   11   12 66.53333     29     47     60</code></pre>
+</div>
+</div>
+</div>
+<div id="儲存資料" class="section level2" number="1.4">
+<h2>
+<span class="header-section-number">1.4</span> 儲存資料<a class="anchor" aria-label="anchor" href="#%E5%84%B2%E5%AD%98%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h2>
+<p>可將dataframe儲存成RData、txt、dat、csv、excel等不同類型的檔案。</p>
+<div id="儲存為rdata檔" class="section level3" number="1.4.1">
+<h3>
+<span class="header-section-number">1.4.1</span> 儲存為RData檔<a class="anchor" aria-label="anchor" href="#%E5%84%B2%E5%AD%98%E7%82%BArdata%E6%AA%94"><i class="fas fa-link"></i></a>
+</h3>
+<p>以save()函數來將gData1存成gData1.RData檔。</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">gData1</span>, file <span class="op">=</span> <span class="st">"gData1.RData"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="儲存為csv檔" class="section level3" number="1.4.2">
+<h3>
+<span class="header-section-number">1.4.2</span> 儲存為csv檔<a class="anchor" aria-label="anchor" href="#%E5%84%B2%E5%AD%98%E7%82%BAcsv%E6%AA%94"><i class="fas fa-link"></i></a>
+</h3>
+<p>以R內建的write.csv()函數儲存為csv檔。</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">gData1</span>, <span class="st">"gData1.csv"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="儲存為excel檔" class="section level3" number="1.4.3">
+<h3>
+<span class="header-section-number">1.4.3</span> 儲存為excel檔<a class="anchor" aria-label="anchor" href="#%E5%84%B2%E5%AD%98%E7%82%BAexcel%E6%AA%94"><i class="fas fa-link"></i></a>
+</h3>
+<p>可用xlsx套件的write.xlsx()函數將資料存為excel檔，或用writexl套件的write_xlsx()函數來儲存。前者有賴java的運作，後者則不需java。</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/colearendt/xlsx">xlsx</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/xlsx/man/write.xlsx.html">write.xlsx</a></span><span class="op">(</span><span class="va">gData1</span>, file<span class="op">=</span><span class="st">"gData1.xlsx"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span>
+<span class="fu"><a href="https://docs.ropensci.org/writexl/reference/write_xlsx.html">write_xlsx</a></span><span class="op">(</span><span class="va">gData1</span>, <span class="st">"gData1.xlsx"</span><span class="op">)</span></code></pre></div>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="index.html">前言</a></div>
+<div class="next"><a href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#datainput"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li>
+<a class="nav-link" href="#%E8%AE%80%E5%85%A5%E8%B3%87%E6%96%99"><span class="header-section-number">1.1</span> 讀入資料</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E4%B8%8B%E8%BC%89%E7%AF%84%E4%BE%8B%E8%B3%87%E6%96%99"><span class="header-section-number">1.1.1</span> 下載範例資料</a></li>
+<li><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E5%B7%A5%E4%BD%9C%E7%9B%AE%E9%8C%84"><span class="header-section-number">1.1.2</span> 設定工作目錄</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88"><span class="header-section-number">1.1.3</span> 讀入檔案</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E8%B3%87%E6%96%99%E6%AA%A2%E8%A6%96"><span class="header-section-number">1.2</span> 資料檢視</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E6%AA%A2%E8%A6%96%E8%B3%87%E6%96%99%E9%A1%9E%E5%9E%8B"><span class="header-section-number">1.2.1</span> 檢視資料類型</a></li>
+<li><a class="nav-link" href="#%E8%B3%87%E6%96%99%E9%A1%9E%E5%9E%8B%E7%9A%84%E8%BD%89%E6%8F%9B"><span class="header-section-number">1.2.2</span> 資料類型的轉換</a></li>
+<li><a class="nav-link" href="#%E6%AA%A2%E8%A6%96%E5%90%84%E7%B5%84%E4%BA%BA%E6%95%B8"><span class="header-section-number">1.2.3</span> 檢視各組人數</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E5%88%86%E6%95%B8%E7%9A%84%E8%BD%89%E6%8F%9B%E5%92%8C%E8%A8%88%E7%AE%97"><span class="header-section-number">1.3</span> 分數的轉換和計算</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E6%8F%9B%E7%82%BA%E7%99%BE%E5%88%86%E5%88%B6"><span class="header-section-number">1.3.1</span> 換為百分制</a></li>
+<li><a class="nav-link" href="#%E5%B0%87%E5%85%A9%E8%AE%8A%E9%A0%85%E5%B9%B3%E5%9D%87"><span class="header-section-number">1.3.2</span> 將兩變項平均</a></li>
+<li><a class="nav-link" href="#%E6%8A%BD%E5%8F%96%E9%83%A8%E4%BB%BD%E8%B3%87%E6%96%99%E5%8A%A0%E4%BB%A5%E8%A8%88%E7%AE%97"><span class="header-section-number">1.3.3</span> 抽取部份資料加以計算</a></li>
+<li><a class="nav-link" href="#%E8%B3%87%E6%96%99%E6%95%B8%E5%80%BC%E7%9A%84%E6%AA%A2%E8%A6%96%E8%88%87%E5%8F%96%E4%BB%A3"><span class="header-section-number">1.3.4</span> 資料數值的檢視與取代</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E5%84%B2%E5%AD%98%E8%B3%87%E6%96%99"><span class="header-section-number">1.4</span> 儲存資料</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E5%84%B2%E5%AD%98%E7%82%BArdata%E6%AA%94"><span class="header-section-number">1.4.1</span> 儲存為RData檔</a></li>
+<li><a class="nav-link" href="#%E5%84%B2%E5%AD%98%E7%82%BAcsv%E6%AA%94"><span class="header-section-number">1.4.2</span> 儲存為csv檔</a></li>
+<li><a class="nav-link" href="#%E5%84%B2%E5%AD%98%E7%82%BAexcel%E6%AA%94"><span class="header-section-number">1.4.3</span> 儲存為excel檔</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

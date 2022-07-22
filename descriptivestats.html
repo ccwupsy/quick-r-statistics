@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 2 描述統計與作圖 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 2 描述統計與作圖 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 2 描述統計與作圖 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content='本單元介紹如何以R語言讀入資料並做初步分析，包含描述統計、作圖。  2.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 ×...'>
+<meta property="og:description" content='本單元介紹如何以R語言讀入資料並做初步分析，包含描述統計、作圖。  2.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 ×...'>
+<meta name="twitter:description" content='本單元介紹如何以R語言讀入資料並做初步分析，包含描述統計、作圖。  2.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6 ×...'>
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="active" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="descriptivestats" class="section level1" number="2">
+<h1>
+<span class="header-section-number">2</span> 描述統計與作圖<a class="anchor" aria-label="anchor" href="#descriptivestats"><i class="fas fa-link"></i></a>
+</h1>
+<p>本單元介紹如何以R語言讀入資料並做初步分析，包含描述統計、作圖。</p>
+<div id="讀入檔案-1" class="section level2" number="2.1">
+<h2>
+<span class="header-section-number">2.1</span> 讀入檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的<a href="https://docs.google.com/spreadsheets/d/1qx6T0brgzuigBpS0p-Wq8hVSFFku9ebV/edit#gid=390389518">gData1.xlsx檔</a>。</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="va">gData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"gData1.xlsx"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 8
+##   學號      性別   組別  出席  影片 期中考 期末考 總成績
+##   &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 102368014 M         9   8.5  82.6     32   28     56.0
+## 2 102368018 M        10   9.5  82.9     66   59     78.8
+## 3 102368024 F         9   8    82.6     69   68     81.2
+## 4 102368027 F         9   8    82.6     68   83.5   86.0
+## 5 102368030 F        11   0    66.5     39   30     45.2
+## 6 100368033 M         4  12    73.3     58   79     82.1</code></pre>
+</div>
+<div id="描述統計" class="section level2" number="2.2">
+<h2>
+<span class="header-section-number">2.2</span> 描述統計<a class="anchor" aria-label="anchor" href="#%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88"><i class="fas fa-link"></i></a>
+</h2>
+<p>計算單一變項、多個變項的描述統計量。</p>
+<div id="計算單一變項的平均數變異數和標準差" class="section level3" number="2.2.1">
+<h3>
+<span class="header-section-number">2.2.1</span> 計算單一變項的平均數、變異數和標準差<a class="anchor" aria-label="anchor" href="#%E8%A8%88%E7%AE%97%E5%96%AE%E4%B8%80%E8%AE%8A%E9%A0%85%E7%9A%84%E5%B9%B3%E5%9D%87%E6%95%B8%E8%AE%8A%E7%95%B0%E6%95%B8%E5%92%8C%E6%A8%99%E6%BA%96%E5%B7%AE"><i class="fas fa-link"></i></a>
+</h3>
+<p>可用mean()、var()和sd()來檢視總成績的平均數、變異數和標準差。</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 74.33021</code></pre>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 126.1945</code></pre>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 11.23363</code></pre>
+<p>可用pastecs套件中的stat.desc()函數來檢視總成績的描述統計量。</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phgrosjean/pastecs">pastecs</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/pastecs/man/stat.desc.html">stat.desc</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, basic<span class="op">=</span><span class="cn">TRUE</span>, desc<span class="op">=</span><span class="cn">TRUE</span>, norm<span class="op">=</span><span class="cn">TRUE</span>, p<span class="op">=</span><span class="fl">0.95</span><span class="op">)</span></code></pre></div>
+<pre><code>##       nbr.val      nbr.null        nbr.na           min           max 
+##  5.700000e+01  0.000000e+00  0.000000e+00  4.517778e+01  1.000000e+02 
+##         range           sum        median          mean       SE.mean 
+##  5.482222e+01  4.236822e+03  7.615556e+01  7.433021e+01  1.487931e+00 
+##  CI.mean.0.95           var       std.dev      coef.var      skewness 
+##  2.980684e+00  1.261945e+02  1.123363e+01  1.511314e-01 -1.319156e-01 
+##      skew.2SE      kurtosis      kurt.2SE    normtest.W    normtest.p 
+## -2.085114e-01  5.845899e-03  4.690725e-03  9.834611e-01  6.243284e-01</code></pre>
+</div>
+<div id="計算多個變項的描述統計量" class="section level3" number="2.2.2">
+<h3>
+<span class="header-section-number">2.2.2</span> 計算多個變項的描述統計量<a class="anchor" aria-label="anchor" href="#%E8%A8%88%E7%AE%97%E5%A4%9A%E5%80%8B%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88%E9%87%8F"><i class="fas fa-link"></i></a>
+</h3>
+<p>若要同時計算多項成績的描述統計，需使用第三方套件，例如pastecs套件的stat.desc()函數。</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/pastecs/man/stat.desc.html">stat.desc</a></span><span class="op">(</span><span class="va">gData1</span>, basic<span class="op">=</span><span class="cn">TRUE</span>, desc<span class="op">=</span><span class="cn">TRUE</span>, norm<span class="op">=</span><span class="cn">TRUE</span>, p<span class="op">=</span><span class="fl">0.95</span><span class="op">)</span></code></pre></div>
+<pre><code>##            學號 性別          組別          出席          影片       期中考
+## nbr.val      NA   NA  57.000000000  5.700000e+01  5.700000e+01   57.0000000
+## nbr.null     NA   NA   0.000000000  1.000000e+00  0.000000e+00    0.0000000
+## nbr.na       NA   NA   0.000000000  0.000000e+00  0.000000e+00    0.0000000
+## min          NA   NA   1.000000000  0.000000e+00  6.653333e+01   29.0000000
+## max          NA   NA  12.000000000  1.200000e+01  8.433333e+01   89.0000000
+## range        NA   NA  11.000000000  1.200000e+01  1.780000e+01   60.0000000
+## sum          NA   NA 341.000000000  5.900000e+02  4.424583e+03 3132.0000000
+## median       NA   NA   6.000000000  1.100000e+01  7.691667e+01   55.0000000
+## mean         NA   NA   5.982456140  1.035088e+01  7.762427e+01   54.9473684
+## SE.mean      NA   NA   0.443196430  3.060493e-01  7.378552e-01    1.7633169
+## CI.mean      NA   NA   0.887829134  6.130904e-01  1.478102e+00    3.5323481
+## var          NA   NA  11.196115288  5.338972e+00  3.103253e+01  177.2293233
+## std.dev      NA   NA   3.346059666  2.310622e+00  5.570685e+00   13.3127504
+## coef.var     NA   NA   0.559312026  2.232295e-01  7.176473e-02    0.2422819
+## skewness     NA   NA   0.234149681 -2.123849e+00 -4.829443e-01    0.2879258
+## skew.2SE     NA   NA   0.370107150 -3.357048e+00 -7.633627e-01    0.4551080
+## kurtosis     NA   NA  -1.217954593  5.573908e+00 -9.842022e-01   -0.2269468
+## kurt.2SE     NA   NA  -0.977281597  4.472480e+00 -7.897197e-01   -0.1821012
+## normtest.W   NA   NA   0.939578114  7.297347e-01  8.923611e-01    0.9706089
+## normtest.p   NA   NA   0.006802493  6.467050e-09  1.042615e-04    0.1791033
+##                   期末考        總成績
+## nbr.val      57.00000000  5.700000e+01
+## nbr.null      1.00000000  0.000000e+00
+## nbr.na        0.00000000  0.000000e+00
+## min           0.00000000  4.517778e+01
+## max         104.00000000  1.000000e+02
+## range       104.00000000  5.482222e+01
+## sum        3389.00000000  4.236822e+03
+## median       57.00000000  7.615556e+01
+## mean         59.45614035  7.433021e+01
+## SE.mean       2.41277279  1.487931e+00
+## CI.mean       4.83336470  2.980684e+00
+## var         331.82393484  1.261945e+02
+## std.dev      18.21603510  1.123363e+01
+## coef.var      0.30637769  1.511314e-01
+## skewness     -0.08459996 -1.319156e-01
+## skew.2SE     -0.13372236 -2.085114e-01
+## kurtosis      1.06201488  5.845899e-03
+## kurt.2SE      0.85215623  4.690725e-03
+## normtest.W    0.97173381  9.834611e-01
+## normtest.p    0.20188192  6.243284e-01</code></pre>
+<p>也可以用psych套件的describe()函數。參數type設定為2是由於偏態和峰度的計算方式有三種，type=2的值與SPSS相同。</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://personality-project.org/r/psych/">psych</a></span><span class="op">)</span>
+<span class="va">summaryTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/psych/man/describe.html">describe</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">[</span>,<span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, type<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">summaryTable</span></code></pre></div>
+<pre><code>##        vars  n  mean    sd median trimmed   mad   min    max  range  skew
+## 出席      1 57 10.35  2.31  11.00   10.79  1.48  0.00  12.00  12.00 -2.24
+## 影片      2 57 77.62  5.57  76.92   78.02  8.23 66.53  84.33  17.80 -0.51
+## 期中考    3 57 54.95 13.31  55.00   54.47 14.83 29.00  89.00  60.00  0.30
+## 期末考    4 57 59.46 18.22  57.00   59.27 16.31  0.00 104.00 104.00 -0.09
+## 總成績    5 57 74.33 11.23  76.16   74.31 12.14 45.18 100.00  54.82 -0.14
+##        kurtosis   se
+## 出席       6.55 0.31
+## 影片      -0.88 0.74
+## 期中考    -0.03 1.76
+## 期末考     1.43 2.41
+## 總成績     0.24 1.49</code></pre>
+<p>也可以用vtable套件的st()函數來做，會有較美觀的表格。</p>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nickch-k.github.io/vtable/">vtable</a></span><span class="op">)</span>
+<span class="co"># library(kableExtra) #在RStudio不需要</span>
+<span class="fu"><a href="https://nickch-k.github.io/vtable/reference/sumtable.html">st</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-29">Table 2.1: </span>Summary Statistics
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+Std. Dev.
+</th>
+<th style="text-align:left;">
+Min
+</th>
+<th style="text-align:left;">
+Pctl. 25
+</th>
+<th style="text-align:left;">
+Pctl. 75
+</th>
+<th style="text-align:left;">
+Max
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+出席
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+10.351
+</td>
+<td style="text-align:left;">
+2.311
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+9.5
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+影片
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+77.624
+</td>
+<td style="text-align:left;">
+5.571
+</td>
+<td style="text-align:left;">
+66.533
+</td>
+<td style="text-align:left;">
+73.333
+</td>
+<td style="text-align:left;">
+82.583
+</td>
+<td style="text-align:left;">
+84.333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期中考
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+54.947
+</td>
+<td style="text-align:left;">
+13.313
+</td>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:left;">
+44
+</td>
+<td style="text-align:left;">
+64
+</td>
+<td style="text-align:left;">
+89
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期末考
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+59.456
+</td>
+<td style="text-align:left;">
+18.216
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+49.5
+</td>
+<td style="text-align:left;">
+70.5
+</td>
+<td style="text-align:left;">
+104
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+總成績
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+74.33
+</td>
+<td style="text-align:left;">
+11.234
+</td>
+<td style="text-align:left;">
+45.178
+</td>
+<td style="text-align:left;">
+66.567
+</td>
+<td style="text-align:left;">
+81.194
+</td>
+<td style="text-align:left;">
+100
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="分組計算單一變項的描述性統計量" class="section level3" number="2.2.3">
+<h3>
+<span class="header-section-number">2.2.3</span> 分組計算單一變項的描述性統計量<a class="anchor" aria-label="anchor" href="#%E5%88%86%E7%B5%84%E8%A8%88%E7%AE%97%E5%96%AE%E4%B8%80%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%B5%B1%E8%A8%88%E9%87%8F"><i class="fas fa-link"></i></a>
+</h3>
+<p>若要分組計算單一變項（如總成績）的描述性統計量，可用aggregate()函數。</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gender<span class="op">=</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>,<span class="va">mean</span><span class="op">)</span></code></pre></div>
+<pre><code>##   gender        x
+## 1      F 73.43611
+## 2      M 75.32366</code></pre>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gender<span class="op">=</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>,<span class="va">sd</span><span class="op">)</span></code></pre></div>
+<pre><code>##   gender        x
+## 1      F 11.80451
+## 2      M 10.69725</code></pre>
+<p>也可以用第三方套件pastecs的stat.desc()函數來做。</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/by.html">by</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">性別</span>, <span class="va">stat.desc</span>, basic <span class="op">=</span> <span class="cn">FALSE</span>, norm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code>## gData1$性別: F
+##       median         mean      SE.mean CI.mean.0.95          var      std.dev 
+##  74.37222222  73.43611111   2.15519916   4.40787720 139.34650223  11.80451194 
+##     coef.var     skewness     skew.2SE     kurtosis     kurt.2SE   normtest.W 
+##   0.16074533  -0.35283642  -0.41326154  -0.10010120  -0.06010311   0.96695587 
+##   normtest.p 
+##   0.45958396 
+## ------------------------------------------------------------ 
+## gData1$性別: M
+##       median         mean      SE.mean CI.mean.0.95          var      std.dev 
+##   77.4555556   75.3236626    2.0586874    4.2316925  114.4312289   10.6972533 
+##     coef.var     skewness     skew.2SE     kurtosis     kurt.2SE   normtest.W 
+##    0.1420172    0.2638189    0.2945380   -0.4395158   -0.2519967    0.9706505 
+##   normtest.p 
+##    0.6190810</code></pre>
+</div>
+<div id="分組計算多個變項的描述性統計量" class="section level3" number="2.2.4">
+<h3>
+<span class="header-section-number">2.2.4</span> 分組計算多個變項的描述性統計量<a class="anchor" aria-label="anchor" href="#%E5%88%86%E7%B5%84%E8%A8%88%E7%AE%97%E5%A4%9A%E5%80%8B%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%B5%B1%E8%A8%88%E9%87%8F"><i class="fas fa-link"></i></a>
+</h3>
+<p>若要分組計算多個變項的描述性統計量，可用aggregate()函數，或使用psych套件中的describeBy()。</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">[</span>,<span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>,by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gender<span class="op">=</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>,<span class="va">mean</span><span class="op">)</span></code></pre></div>
+<pre><code>##   gender     出席     影片   期中考   期末考   總成績
+## 1      F 10.28333 76.92611 53.13333 59.35000 73.43611
+## 2      M 10.42593 78.40000 56.96296 59.57407 75.32366</code></pre>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">gData</span><span class="op">[</span>,<span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>,by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gender<span class="op">=</span><span class="va">gData</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>,<span class="va">summary</span><span class="op">)</span> <span class="co">#較不建議</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/psych/man/describe.by.html">describeBy</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">[</span>,<span class="fl">4</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gender<span class="op">=</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span><span class="op">)</span>,type<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Descriptive statistics by group 
+## gender: F
+##      vars  n  mean   sd median trimmed  mad   min   max range  skew kurtosis
+## 出席    1 30 10.28 2.59  11.00   10.81 1.48  0.00 12.00  12.0 -2.58     8.21
+## 影片    2 30 76.93 6.11  76.74   77.30 8.66 66.53 84.33  17.8 -0.29    -1.24
+##        se
+## 出席 0.47
+## 影片 1.12
+## ------------------------------------------------------------ 
+## gender: M
+##      vars  n  mean   sd median trimmed  mad   min   max range  skew kurtosis
+## 出席    1 27 10.43 2.01  11.00   10.72 1.48  5.00 12.00   7.0 -1.39     1.13
+## 影片    2 27 78.40 4.90  77.12   78.78 7.09 66.53 84.33  17.8 -0.77    -0.17
+##        se
+## 出席 0.39
+## 影片 0.94</code></pre>
+<p>要漂亮一點的表格可以用vTable套件。</p>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nickch-k.github.io/vtable/">vtable</a></span><span class="op">)</span>
+<span class="fu"><a href="https://nickch-k.github.io/vtable/reference/sumtable.html">st</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-36">Table 2.2: </span>Summary Statistics
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+Std. Dev.
+</th>
+<th style="text-align:left;">
+Min
+</th>
+<th style="text-align:left;">
+Pctl. 25
+</th>
+<th style="text-align:left;">
+Pctl. 75
+</th>
+<th style="text-align:left;">
+Max
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+出席
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+10.351
+</td>
+<td style="text-align:left;">
+2.311
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+9.5
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+影片
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+77.624
+</td>
+<td style="text-align:left;">
+5.571
+</td>
+<td style="text-align:left;">
+66.533
+</td>
+<td style="text-align:left;">
+73.333
+</td>
+<td style="text-align:left;">
+82.583
+</td>
+<td style="text-align:left;">
+84.333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期中考
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+54.947
+</td>
+<td style="text-align:left;">
+13.313
+</td>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:left;">
+44
+</td>
+<td style="text-align:left;">
+64
+</td>
+<td style="text-align:left;">
+89
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期末考
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+59.456
+</td>
+<td style="text-align:left;">
+18.216
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+49.5
+</td>
+<td style="text-align:left;">
+70.5
+</td>
+<td style="text-align:left;">
+104
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+總成績
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+74.33
+</td>
+<td style="text-align:left;">
+11.234
+</td>
+<td style="text-align:left;">
+45.178
+</td>
+<td style="text-align:left;">
+66.567
+</td>
+<td style="text-align:left;">
+81.194
+</td>
+<td style="text-align:left;">
+100
+</td>
+</tr>
+</tbody>
+</table></div>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://nickch-k.github.io/vtable/reference/sumtable.html">st</a></span><span class="op">(</span><span class="va">gData1</span>, group<span class="op">=</span><span class="st">'性別'</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-37">Table 2.3: </span>Summary Statistics
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+性別
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+F
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+M
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+SD
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+組別
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+5.8
+</td>
+<td style="text-align:left;">
+3.316
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+6.185
+</td>
+<td style="text-align:left;">
+3.431
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+出席
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+10.283
+</td>
+<td style="text-align:left;">
+2.585
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+10.426
+</td>
+<td style="text-align:left;">
+2.008
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+影片
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+76.926
+</td>
+<td style="text-align:left;">
+6.11
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+78.4
+</td>
+<td style="text-align:left;">
+4.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期中考
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+53.133
+</td>
+<td style="text-align:left;">
+12.822
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+56.963
+</td>
+<td style="text-align:left;">
+13.797
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+期末考
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+59.35
+</td>
+<td style="text-align:left;">
+19.297
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+59.574
+</td>
+<td style="text-align:left;">
+17.301
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+總成績
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+73.436
+</td>
+<td style="text-align:left;">
+11.805
+</td>
+<td style="text-align:left;">
+27
+</td>
+<td style="text-align:left;">
+75.324
+</td>
+<td style="text-align:left;">
+10.697
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div id="資料作圖和相關" class="section level2" number="2.3">
+<h2>
+<span class="header-section-number">2.3</span> 資料作圖和相關<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E4%BD%9C%E5%9C%96%E5%92%8C%E7%9B%B8%E9%97%9C"><i class="fas fa-link"></i></a>
+</h2>
+<p>初步畫直方圖、箱型圖和散布圖，並計算變項之間的相關。</p>
+<div id="直方圖" class="section level3" number="2.3.1">
+<h3>
+<span class="header-section-number">2.3.1</span> 直方圖<a class="anchor" aria-label="anchor" href="#%E7%9B%B4%E6%96%B9%E5%9C%96"><i class="fas fa-link"></i></a>
+</h3>
+<p>以hist()來繪製直方圖。</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-39-1.png" width="672"></div>
+</div>
+<div id="箱型圖" class="section level3" number="2.3.2">
+<h3>
+<span class="header-section-number">2.3.2</span> 箱型圖<a class="anchor" aria-label="anchor" href="#%E7%AE%B1%E5%9E%8B%E5%9C%96"><i class="fas fa-link"></i></a>
+</h3>
+<p>以boxplot()來繪製箱型圖。</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, ylab<span class="op">=</span><span class="st">"分"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-40-1.png" width="672"></div>
+<p>分組畫箱型圖。</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">~</span><span class="va">gData1</span><span class="op">$</span><span class="va">性別</span>, xlab<span class="op">=</span><span class="st">"性別"</span>, ylab<span class="op">=</span><span class="st">"分"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-41-1.png" width="672"></div>
+</div>
+<div id="散佈圖" class="section level3" number="2.3.3">
+<h3>
+<span class="header-section-number">2.3.3</span> 散佈圖<a class="anchor" aria-label="anchor" href="#%E6%95%A3%E4%BD%88%E5%9C%96"><i class="fas fa-link"></i></a>
+</h3>
+<p>以plot()繪製兩變項或多個變項的散佈圖。</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">出席</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span>, xlab<span class="op">=</span><span class="st">"出席"</span>, ylab<span class="op">=</span><span class="st">"總成績"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-42-1.png" width="672"></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gData1</span>, select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">出席</span>, <span class="va">期中考</span>, <span class="va">期末考</span>, <span class="va">總成績</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">gData2</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-43-1.png" width="672"></div>
+</div>
+<div id="計算相關與繪圖" class="section level3" number="2.3.4">
+<h3>
+<span class="header-section-number">2.3.4</span> 計算相關與繪圖<a class="anchor" aria-label="anchor" href="#%E8%A8%88%E7%AE%97%E7%9B%B8%E9%97%9C%E8%88%87%E7%B9%AA%E5%9C%96"><i class="fas fa-link"></i></a>
+</h3>
+<div id="計算相關" class="section level4" number="2.3.4.1">
+<h4>
+<span class="header-section-number">2.3.4.1</span> 計算相關<a class="anchor" aria-label="anchor" href="#%E8%A8%88%E7%AE%97%E7%9B%B8%E9%97%9C"><i class="fas fa-link"></i></a>
+</h4>
+<p>以cor()計算兩變項的相關，或以cor.test()得到相關和檢定值。</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">出席</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.5360227</code></pre>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html">cor.test</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">$</span><span class="va">出席</span>, <span class="va">gData1</span><span class="op">$</span><span class="va">總成績</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##  Pearson's product-moment correlation
+## 
+## data:  gData1$出席 and gData1$總成績
+## t = 4.7089, df = 55, p-value = 1.73e-05
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.3201738 0.6989657
+## sample estimates:
+##       cor 
+## 0.5360227</code></pre>
+<p>cor()可計算多個變項的相關，若要得到檢定結果，可用Hmisc()的rcorr()函數。</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">gData2</span><span class="op">)</span></code></pre></div>
+<pre><code>##             出席    期中考    期末考    總成績
+## 出席   1.0000000 0.2220785 0.3760520 0.5360227
+## 期中考 0.2220785 1.0000000 0.6211838 0.8319727
+## 期末考 0.3760520 0.6211838 1.0000000 0.8983073
+## 總成績 0.5360227 0.8319727 0.8983073 1.0000000</code></pre>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://hbiostat.org/R/Hmisc/">Hmisc</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.html">rcorr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.matrix.html">data.matrix</a></span><span class="op">(</span><span class="va">gData2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##        出席 期中考 期末考 總成績
+## 出席   1.00   0.22   0.38   0.54
+## 期中考 0.22   1.00   0.62   0.83
+## 期末考 0.38   0.62   1.00   0.90
+## 總成績 0.54   0.83   0.90   1.00
+## 
+## n= 57 
+## 
+## 
+## P
+##        出席   期中考 期末考 總成績
+## 出席          0.0969 0.0039 0.0000
+## 期中考 0.0969        0.0000 0.0000
+## 期末考 0.0039 0.0000        0.0000
+## 總成績 0.0000 0.0000 0.0000</code></pre>
+</div>
+<div id="多個變項的相關矩陣圖" class="section level4" number="2.3.4.2">
+<h4>
+<span class="header-section-number">2.3.4.2</span> 多個變項的相關矩陣圖<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E5%80%8B%E8%AE%8A%E9%A0%85%E7%9A%84%E7%9B%B8%E9%97%9C%E7%9F%A9%E9%99%A3%E5%9C%96"><i class="fas fa-link"></i></a>
+</h4>
+<p>若要將多個變項的相關視覺化，可使用corrplot套件的corrplot()函數。</p>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot">corrplot</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">gData2</span><span class="op">)</span>, method<span class="op">=</span><span class="st">'number'</span>,type <span class="op">=</span> <span class="st">"upper"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-48-1.png" width="672"></div>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">gData2</span><span class="op">)</span>, method<span class="op">=</span><span class="st">'color'</span>, type<span class="op">=</span><span class="st">"upper"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-49-1.png" width="672"></div>
+
+</div>
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></div>
+<div class="next"><a href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#descriptivestats"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-1"><span class="header-section-number">2.1</span> 讀入檔案</a></li>
+<li>
+<a class="nav-link" href="#%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88"><span class="header-section-number">2.2</span> 描述統計</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E8%A8%88%E7%AE%97%E5%96%AE%E4%B8%80%E8%AE%8A%E9%A0%85%E7%9A%84%E5%B9%B3%E5%9D%87%E6%95%B8%E8%AE%8A%E7%95%B0%E6%95%B8%E5%92%8C%E6%A8%99%E6%BA%96%E5%B7%AE"><span class="header-section-number">2.2.1</span> 計算單一變項的平均數、變異數和標準差</a></li>
+<li><a class="nav-link" href="#%E8%A8%88%E7%AE%97%E5%A4%9A%E5%80%8B%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88%E9%87%8F"><span class="header-section-number">2.2.2</span> 計算多個變項的描述統計量</a></li>
+<li><a class="nav-link" href="#%E5%88%86%E7%B5%84%E8%A8%88%E7%AE%97%E5%96%AE%E4%B8%80%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%B5%B1%E8%A8%88%E9%87%8F"><span class="header-section-number">2.2.3</span> 分組計算單一變項的描述性統計量</a></li>
+<li><a class="nav-link" href="#%E5%88%86%E7%B5%84%E8%A8%88%E7%AE%97%E5%A4%9A%E5%80%8B%E8%AE%8A%E9%A0%85%E7%9A%84%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%B5%B1%E8%A8%88%E9%87%8F"><span class="header-section-number">2.2.4</span> 分組計算多個變項的描述性統計量</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#%E8%B3%87%E6%96%99%E4%BD%9C%E5%9C%96%E5%92%8C%E7%9B%B8%E9%97%9C"><span class="header-section-number">2.3</span> 資料作圖和相關</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E7%9B%B4%E6%96%B9%E5%9C%96"><span class="header-section-number">2.3.1</span> 直方圖</a></li>
+<li><a class="nav-link" href="#%E7%AE%B1%E5%9E%8B%E5%9C%96"><span class="header-section-number">2.3.2</span> 箱型圖</a></li>
+<li><a class="nav-link" href="#%E6%95%A3%E4%BD%88%E5%9C%96"><span class="header-section-number">2.3.3</span> 散佈圖</a></li>
+<li><a class="nav-link" href="#%E8%A8%88%E7%AE%97%E7%9B%B8%E9%97%9C%E8%88%87%E7%B9%AA%E5%9C%96"><span class="header-section-number">2.3.4</span> 計算相關與繪圖</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 4 相依樣本單因子變異數分析 | Quick R for Statistics</title>
+<meta name="author" content="Chia-Ching Wu">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 4 相依樣本單因子變異數分析 | Quick R for Statistics">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 4 相依樣本單因子變異數分析 | Quick R for Statistics">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<meta name="description" content='以R語言讀入資料並做相依樣本單因子變異數分析。  4.1 資料準備  4.1.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6...'>
+<meta property="og:description" content='以R語言讀入資料並做相依樣本單因子變異數分析。  4.1 資料準備  4.1.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6...'>
+<meta name="twitter:description" content='以R語言讀入資料並做相依樣本單因子變異數分析。  4.1 資料準備  4.1.1 讀入檔案 以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的gData1.xlsx檔。 library(readxl) gData1 &lt;- read_xlsx("gData1.xlsx") head(gData1) ## # A tibble: 6...'>
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Quick R for Statistics</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">前言</a></li>
+<li><a class="" href="datainput.html"><span class="header-section-number">1</span> 資料的讀入與整理</a></li>
+<li><a class="" href="descriptivestats.html"><span class="header-section-number">2</span> 描述統計與作圖</a></li>
+<li><a class="" href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></li>
+<li><a class="active" href="within1way.html"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li><a class="" href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></li>
+<li><a class="" href="mixed2way.html"><span class="header-section-number">6</span> 混合樣本二因子變異數分析</a></li>
+<li><a class="" href="multireg.html"><span class="header-section-number">7</span> 多元迴歸</a></li>
+<li><a class="" href="moderation.html"><span class="header-section-number">8</span> 調節效果分析</a></li>
+<li><a class="" href="mediation.html"><span class="header-section-number">9</span> 中介效果分析</a></li>
+<li><a class="" href="multisheets.html"><span class="header-section-number">10</span> 多個EXCEL檔的資料匯整與分析</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">11</span> 參考資料</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="within1way" class="section level1" number="4">
+<h1>
+<span class="header-section-number">4</span> 相依樣本單因子變異數分析<a class="anchor" aria-label="anchor" href="#within1way"><i class="fas fa-link"></i></a>
+</h1>
+<p>以R語言讀入資料並做相依樣本單因子變異數分析。</p>
+<div id="資料準備" class="section level2" number="4.1">
+<h2>
+<span class="header-section-number">4.1</span> 資料準備<a class="anchor" aria-label="anchor" href="#%E8%B3%87%E6%96%99%E6%BA%96%E5%82%99"><i class="fas fa-link"></i></a>
+</h2>
+<div id="讀入檔案-3" class="section level3" number="4.1.1">
+<h3>
+<span class="header-section-number">4.1.1</span> 讀入檔案<a class="anchor" aria-label="anchor" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-3"><i class="fas fa-link"></i></a>
+</h3>
+<p>以xlsx套件的read.xlsx()函數或readxl套件的read_xlsx()函數來讀入上個單元中所存出的<a href="https://docs.google.com/spreadsheets/d/1qx6T0brgzuigBpS0p-Wq8hVSFFku9ebV/edit#gid=390389518">gData1.xlsx檔</a>。</p>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="va">gData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"gData1.xlsx"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 8
+##   學號      性別   組別  出席  影片 期中考 期末考 總成績
+##   &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 102368014 M         9   8.5  82.6     32   28     56.0
+## 2 102368018 M        10   9.5  82.9     66   59     78.8
+## 3 102368024 F         9   8    82.6     69   68     81.2
+## 4 102368027 F         9   8    82.6     68   83.5   86.0
+## 5 102368030 F        11   0    66.5     39   30     45.2
+## 6 100368033 M         4  12    73.3     58   79     82.1</code></pre>
+</div>
+<div id="準備可供變異數分析的資料" class="section level3" number="4.1.2">
+<h3>
+<span class="header-section-number">4.1.2</span> 準備可供變異數分析的資料<a class="anchor" aria-label="anchor" href="#%E6%BA%96%E5%82%99%E5%8F%AF%E4%BE%9B%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90%E7%9A%84%E8%B3%87%E6%96%99"><i class="fas fa-link"></i></a>
+</h3>
+<p>新增一假設的期初考成績，以做為變異數分析之用。</p>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span>
+<span class="va">gData1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span><span class="va">gData1</span>, 期初考<span class="op">=</span><span class="va">gData1</span><span class="op">$</span><span class="va">出席</span><span class="op">*</span><span class="fl">8</span>, .after <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData1</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 9
+##   學號      性別   組別  出席  影片 期初考 期中考 期末考 總成績
+##   &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 102368014 M         9   8.5  82.6     68     32   28     56.0
+## 2 102368018 M        10   9.5  82.9     76     66   59     78.8
+## 3 102368024 F         9   8    82.6     64     69   68     81.2
+## 4 102368027 F         9   8    82.6     64     68   83.5   86.0
+## 5 102368030 F        11   0    66.5      0     39   30     45.2
+## 6 100368033 M         4  12    73.3     96     58   79     82.1</code></pre>
+<p>選擇期初考、期中考和期末考進來分析，並加入編號（亦可使用學號，這邊方便起見加入編號來做）。</p>
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gData1</span>, select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">期初考</span>, <span class="va">期中考</span>, <span class="va">期末考</span><span class="op">)</span><span class="op">)</span>
+<span class="va">gData3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span><span class="va">gData3</span>, id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gData3</span><span class="op">)</span><span class="op">)</span>, .after <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData3</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##      id 期初考 期中考 期末考
+##   &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     1     68     32   28  
+## 2     2     76     66   59  
+## 3     3     64     69   68  
+## 4     4     64     68   83.5
+## 5     5      0     39   30  
+## 6     6     96     58   79</code></pre>
+<p>用reshape2套件的melt()函數，將期初、期中、期末考合併為一行。</p>
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape">reshape2</a></span><span class="op">)</span>
+<span class="va">gData3m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">gData3</span>, id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"id"</span><span class="op">)</span>, measured <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"期初考"</span>, <span class="st">"期中考"</span>, <span class="st">"期末考"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData3m</span><span class="op">)</span></code></pre></div>
+<pre><code>##   id variable value
+## 1  1   期初考    68
+## 2  2   期初考    76
+## 3  3   期初考    64
+## 4  4   期初考    64
+## 5  5   期初考     0
+## 6  6   期初考    96</code></pre>
+<p>更改column的名稱。</p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">gData3m</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'編號'</span>, <span class="st">'考試'</span>, <span class="st">'成績'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData3m</span><span class="op">)</span></code></pre></div>
+<pre><code>##   編號   考試 成績
+## 1    1 期初考   68
+## 2    2 期初考   76
+## 3    3 期初考   64
+## 4    4 期初考   64
+## 5    5 期初考    0
+## 6    6 期初考   96</code></pre>
+<p>以上資料格式即為變異數分析所需的格式。</p>
+<p>在執行相依樣本單因子變異數分析時，要注意的是，資料必須如此例這般，不同組的資料以「接續」的方式排列。若拿到的資料是一般相依樣本的資料輸入方式（即不同組在不同的columns），需先進行資料的處理，將wide data轉為long data，再做相依樣本單因子變異數分析。</p>
+</div>
+</div>
+<div id="描述統計-1" class="section level2" number="4.2">
+<h2>
+<span class="header-section-number">4.2</span> 描述統計<a class="anchor" aria-label="anchor" href="#%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>檢視三次考試的平均數和標準差。</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://nickch-k.github.io/vtable/">vtable</a></span><span class="op">)</span>
+<span class="fu"><a href="https://nickch-k.github.io/vtable/reference/sumtable.html">st</a></span><span class="op">(</span><span class="va">gData3m</span>, group<span class="op">=</span><span class="st">'考試'</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-65">Table 4.1: </span>Summary Statistics
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+考試
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+期初考
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+期中考
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+期末考
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+SD
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+SD
+</th>
+<th style="text-align:left;">
+N
+</th>
+<th style="text-align:left;">
+Mean
+</th>
+<th style="text-align:left;">
+SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+編號
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:left;">
+16.598
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:left;">
+16.598
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+29
+</td>
+<td style="text-align:left;">
+16.598
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+成績
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+82.807
+</td>
+<td style="text-align:left;">
+18.485
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+54.947
+</td>
+<td style="text-align:left;">
+13.313
+</td>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:left;">
+59.456
+</td>
+<td style="text-align:left;">
+18.216
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>以boxplot來看作圖。</p>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">成績</span><span class="op">~</span><span class="va">考試</span>, data<span class="op">=</span><span class="va">gData3m</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-67-1.png" width="672"></div>
+<p>以ggpubr套件的ggline函數來作圖，畫平均數和標準差。</p>
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggline.html">ggline</a></span><span class="op">(</span><span class="va">gData3m</span>,x<span class="op">=</span><span class="st">"考試"</span>,y<span class="op">=</span><span class="st">"成績"</span>,add<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mean_sd"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="quick-r-statistics_files/figure-html/unnamed-chunk-68-1.png" width="672"></div>
+</div>
+<div id="變異數分析" class="section level2" number="4.3">
+<h2>
+<span class="header-section-number">4.3</span> 變異數分析<a class="anchor" aria-label="anchor" href="#%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<p>先將編號的格式改為factor。</p>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gData3m</span><span class="op">$</span><span class="va">編號</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gData3m</span><span class="op">$</span><span class="va">編號</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gData3m</span><span class="op">)</span></code></pre></div>
+<pre><code>##   編號   考試 成績
+## 1    1 期初考   68
+## 2    2 期初考   76
+## 3    3 期初考   64
+## 4    4 期初考   64
+## 5    5 期初考    0
+## 6    6 期初考   96</code></pre>
+<div id="球型檢定與變異數分析" class="section level3" number="4.3.1">
+<h3>
+<span class="header-section-number">4.3.1</span> 球型檢定與變異數分析<a class="anchor" aria-label="anchor" href="#%E7%90%83%E5%9E%8B%E6%AA%A2%E5%AE%9A%E8%88%87%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h3>
+<p>用rstatix package中的anova_test()來做變異數分析，將結果儲存為res。並以res來看檢驗的結果。</p>
+<p>因本資料違反球型檢定，需要看sphericity correction的表。Sphericity Corrections以Greenhouse-Geisser (GG)和Huynh-Feldt (HF) epsilon values來做校正。校正後的值 p[GG] 和 p[HF] 皆小於.001，表示不同考試成績有顯著差異。</p>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/rstatix/">rstatix</a></span><span class="op">)</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rpkgs.datanovia.com/rstatix/reference/anova_test.html">anova_test</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gData3m</span>, dv <span class="op">=</span> <span class="va">成績</span>, wid <span class="op">=</span> <span class="va">編號</span>, within <span class="op">=</span> <span class="va">考試</span><span class="op">)</span>
+<span class="va">res</span></code></pre></div>
+<pre><code>## ANOVA Table (type III tests)
+## 
+## $ANOVA
+##   Effect DFn DFd      F        p p&lt;.05   ges
+## 1   考試   2 112 73.704 3.74e-21     * 0.349
+## 
+## $`Mauchly's Test for Sphericity`
+##   Effect    W     p p&lt;.05
+## 1   考試 0.84 0.008     *
+## 
+## $`Sphericity Corrections`
+##   Effect   GGe      DF[GG]   p[GG] p[GG]&lt;.05   HFe      DF[HF]   p[HF]
+## 1   考試 0.862 1.72, 96.57 1.4e-18         * 0.887 1.77, 99.36 4.8e-19
+##   p[HF]&lt;.05
+## 1         *</code></pre>
+<p>最後，用get_anova_table()來看校正後的結果。校正的結果顯示，F(1.72, 96.57) = 73.704, p &lt; .001。三次考試的成績顯著不同。</p>
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rpkgs.datanovia.com/rstatix/reference/anova_test.html">get_anova_table</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
+<pre><code>## ANOVA Table (type III tests)
+## 
+##   Effect  DFn   DFd      F       p p&lt;.05   ges
+## 1   考試 1.72 96.57 73.704 1.4e-18     * 0.349</code></pre>
+</div>
+<div id="多重比較" class="section level3" number="4.3.2">
+<h3>
+<span class="header-section-number">4.3.2</span> 多重比較<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83"><i class="fas fa-link"></i></a>
+</h3>
+<p>可用pairwise_t_test()來做兩兩比較，看差異來自於哪裡。結果顯示期中和期末考沒有差異，其餘兩兩比較都有差異。</p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rpkgs.datanovia.com/rstatix/reference/t_test.html">pairwise_t_test</a></span><span class="op">(</span><span class="va">gData3m</span>, <span class="va">成績</span> <span class="op">~</span> <span class="va">考試</span>, paired <span class="op">=</span> <span class="cn">TRUE</span>, p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 10
+##   .y.   group1 group2    n1    n2 statistic    df        p    p.adj p.adj.signif
+## * &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+## 1 成績  期初考 期中考    57    57     10.4     56 1.11e-14 3.33e-14 ****        
+## 2 成績  期初考 期末考    57    57      8.60    56 8.06e-12 2.42e-11 ****        
+## 3 成績  期中考 期末考    57    57     -2.36    56 2.2 e- 2 6.5 e- 2 ns</code></pre>
+</div>
+<div id="若未違反球型檢定" class="section level3" number="4.3.3">
+<h3>
+<span class="header-section-number">4.3.3</span> 若未違反球型檢定<a class="anchor" aria-label="anchor" href="#%E8%8B%A5%E6%9C%AA%E9%81%95%E5%8F%8D%E7%90%83%E5%9E%8B%E6%AA%A2%E5%AE%9A"><i class="fas fa-link"></i></a>
+</h3>
+<p>若是球型檢定沒有違反，也可以用aov()來做變異數分析。在aov()中，以y~factor(x)+Error(factor(Subj)/factor(x))來執行變異數分析。</p>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ANOVAData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aov.html">aov</a></span><span class="op">(</span><span class="va">成績</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">考試</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/aov.html">Error</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">編號</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">考試</span><span class="op">)</span><span class="op">)</span>, data<span class="op">=</span><span class="va">gData3m</span><span class="op">)</span></code></pre></div>
+<p>以model.tables()來看各組的邊緣平均數(marginal mean)和總平均數(ground mean)。總平均數為65.74，期初、期中和期末考的平均數分別為82.81、54.95與59.46。</p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/model.tables.html">model.tables</a></span><span class="op">(</span><span class="va">ANOVAData</span>,type<span class="op">=</span><span class="st">"means"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Tables of means
+## Grand mean
+##          
+## 65.73684 
+## 
+##  factor(考試) 
+## factor(考試)
+## 期初考 期中考 期末考 
+##  82.81  54.95  59.46</code></pre>
+<p>以summary()來看ANOVA table。可得到F(2,112)=73.7，p&lt;.001，表示三次考試的成績有顯著差異。</p>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">ANOVAData</span>,type<span class="op">=</span><span class="st">"means"</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Error: factor(編號)
+##           Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Residuals 56  28272   504.9               
+## 
+## Error: factor(編號):factor(考試)
+##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## factor(考試)   2  25493   12747    73.7 &lt;2e-16 ***
+## Residuals    112  19370     173                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="hypotesting.html"><span class="header-section-number">3</span> 假設檢定</a></div>
+<div class="next"><a href="between1way.html"><span class="header-section-number">5</span> 獨立樣本單因子變異數分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#within1way"><span class="header-section-number">4</span> 相依樣本單因子變異數分析</a></li>
+<li>
+<a class="nav-link" href="#%E8%B3%87%E6%96%99%E6%BA%96%E5%82%99"><span class="header-section-number">4.1</span> 資料準備</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E8%AE%80%E5%85%A5%E6%AA%94%E6%A1%88-3"><span class="header-section-number">4.1.1</span> 讀入檔案</a></li>
+<li><a class="nav-link" href="#%E6%BA%96%E5%82%99%E5%8F%AF%E4%BE%9B%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90%E7%9A%84%E8%B3%87%E6%96%99"><span class="header-section-number">4.1.2</span> 準備可供變異數分析的資料</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E6%8F%8F%E8%BF%B0%E7%B5%B1%E8%A8%88-1"><span class="header-section-number">4.2</span> 描述統計</a></li>
+<li>
+<a class="nav-link" href="#%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90"><span class="header-section-number">4.3</span> 變異數分析</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E7%90%83%E5%9E%8B%E6%AA%A2%E5%AE%9A%E8%88%87%E8%AE%8A%E7%95%B0%E6%95%B8%E5%88%86%E6%9E%90"><span class="header-section-number">4.3.1</span> 球型檢定與變異數分析</a></li>
+<li><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83"><span class="header-section-number">4.3.2</span> 多重比較</a></li>
+<li><a class="nav-link" href="#%E8%8B%A5%E6%9C%AA%E9%81%95%E5%8F%8D%E7%90%83%E5%9E%8B%E6%AA%A2%E5%AE%9A"><span class="header-section-number">4.3.3</span> 若未違反球型檢定</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Quick R for Statistics</strong>" was written by Chia-Ching Wu. It was last built on 2022-05-16.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
